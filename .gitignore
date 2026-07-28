@@ -3,6 +3,9 @@
 
 # Local run artifacts
 *.log
+candidates.json
+rank_prompt.txt
+ranked.json
 __pycache__/
 *.pyc
 .venv/
