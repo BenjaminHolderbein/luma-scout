@@ -1,0 +1,11 @@
+# Secrets / local config
+.env
+
+# Local run artifacts
+*.log
+__pycache__/
+*.pyc
+.venv/
+
+# NOTE: state/seen.json IS committed (it's the persistence layer for the
+# cloud routine). Nothing sensitive in it — only Luma event ids + dates.

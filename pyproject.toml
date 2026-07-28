@@ -1,0 +1,12 @@
+[project]
+name = "luma-scout"
+version = "0.1.0"
+description = "Daily SF event scout: ranks Luma events against Ben's priorities and pushes rich ntfy notifications."
+requires-python = ">=3.11"
+# Zero third-party dependencies on purpose (stdlib only) so it runs anywhere,
+# including a fresh cloud-routine clone, with no install step.
+dependencies = []
+
+[tool.luma-scout]
+place = "sf"
+place_id = "discplace-BDj7GNbGlsF7Cka"
