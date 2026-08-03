@@ -9,34 +9,14 @@
   "first_notified": "2026-07-29T14:04:34.508858+00:00",
   "tier": "food"
  },
- "evt-45VVK0N3KlKxofo": {
-  "event_date": "2026-07-31T02:00:00.000Z",
-  "first_notified": "2026-07-28T14:05:37.189860+00:00",
-  "tier": "food"
+ "evt-5gTC4AXFl5XH2bQ": {
+  "event_date": "2026-08-03T16:00:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
+  "tier": "networking"
  },
- "evt-4KKdyjUxrCUBsbD": {
-  "event_date": "2026-07-29T00:30:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
-  "tier": "food"
- },
- "evt-4wYqBOXA7ec2pla": {
-  "event_date": "2026-07-30T01:30:00.000Z",
-  "first_notified": "2026-07-28T14:05:37.189860+00:00",
-  "tier": "food"
- },
- "evt-7FtTJSFEc9492Yw": {
-  "event_date": "2026-07-31T00:00:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
-  "tier": "food"
- },
- "evt-9kBGaQyAylbqM3i": {
-  "event_date": "2026-07-31T00:30:00.000Z",
-  "first_notified": "2026-07-28T07:48:52.564331+00:00",
-  "tier": "food"
- },
- "evt-AUlyE6fg1iijyVx": {
-  "event_date": "2026-07-29T01:00:00.000Z",
-  "first_notified": "2026-07-28T07:48:52.564331+00:00",
+ "evt-5jLbbZklyKYUBvg": {
+  "event_date": "2026-08-07T01:00:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
   "tier": "food"
  },
  "evt-AxyTqFihn3AvzMz": {
@@ -44,9 +24,19 @@
   "first_notified": "2026-07-27T23:54:09.910961+00:00",
   "tier": "hackathon"
  },
- "evt-G2H1XlOXOzz69xE": {
-  "event_date": "2026-07-29T16:00:00.000Z",
-  "first_notified": "2026-07-28T14:05:37.189860+00:00",
+ "evt-D045fN7Xtf3XFEn": {
+  "event_date": "2026-08-05T01:30:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
+  "tier": "food"
+ },
+ "evt-DGqe4EwC2J2WgHw": {
+  "event_date": "2026-08-08T22:00:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
+  "tier": "networking"
+ },
+ "evt-FkRWA3eSt2EsrEF": {
+  "event_date": "2026-08-07T01:00:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
   "tier": "food"
  },
  "evt-G6Q45YI5Wh5OjEb": {
@@ -54,15 +44,10 @@
   "first_notified": "2026-07-29T14:04:34.508858+00:00",
   "tier": "food"
  },
- "evt-HmPPD9bnc0ru6qn": {
-  "event_date": "2026-07-31T01:00:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
-  "tier": "food"
- },
- "evt-KmJ5ycJz99Tr0eQ": {
-  "event_date": "2026-07-29T00:30:00.000Z",
-  "first_notified": "2026-07-28T14:05:37.189860+00:00",
-  "tier": "food"
+ "evt-JymROVyd4pXctaG": {
+  "event_date": "2026-08-07T15:00:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
+  "tier": "networking"
  },
  "evt-LjCw8aheGb10dGd": {
   "event_date": "2026-08-07T01:30:00.000Z",
@@ -79,14 +64,9 @@
   "first_notified": "2026-07-28T14:05:37.189860+00:00",
   "tier": "food"
  },
- "evt-NSw1gQCCwb9DzIf": {
-  "event_date": "2026-07-30T00:30:00.000Z",
-  "first_notified": "2026-07-28T07:48:52.564331+00:00",
-  "tier": "food"
- },
- "evt-P7Fb9e3MUBbNsmh": {
-  "event_date": "2026-07-31T01:00:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
+ "evt-PGX2HjUjUeNDacy": {
+  "event_date": "2026-08-06T01:30:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
   "tier": "food"
  },
  "evt-S8fxCNvXFzeBNfY": {
@@ -94,69 +74,34 @@
   "first_notified": "2026-07-29T14:04:34.508858+00:00",
   "tier": "networking"
  },
- "evt-UHAODEGAFIQryhB": {
-  "event_date": "2026-07-31T00:00:00.000Z",
-  "first_notified": "2026-07-28T14:05:37.189860+00:00",
+ "evt-SH14DdbsqYcHYkX": {
+  "event_date": "2026-08-05T01:30:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
   "tier": "food"
  },
- "evt-VjQnT44ODAaaFNi": {
-  "event_date": "2026-07-29T01:00:00.000Z",
-  "first_notified": "2026-07-28T14:05:37.189860+00:00",
-  "tier": "food"
+ "evt-YNgOy8U9OvH0irf": {
+  "event_date": "2026-08-07T00:30:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
+  "tier": "seminar"
  },
- "evt-XCxlrZIFrED0Nx5": {
-  "event_date": "2026-07-29T01:00:00.000Z",
-  "first_notified": "2026-07-28T07:48:52.564331+00:00",
-  "tier": "food"
+ "evt-cTw4vOM0oViELXW": {
+  "event_date": "2026-08-09T17:00:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
+  "tier": "hackathon"
  },
- "evt-aB5nMTzES7ksvDG": {
-  "event_date": "2026-07-29T00:00:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
-  "tier": "food"
- },
- "evt-cHCIbq5wm8hdeyC": {
-  "event_date": "2026-07-29T00:30:00.000Z",
-  "first_notified": "2026-07-28T14:05:37.189860+00:00",
-  "tier": "food"
- },
- "evt-dBN9CABaMBJNoiy": {
-  "event_date": "2026-07-31T01:30:00.000Z",
-  "first_notified": "2026-07-29T14:04:34.508858+00:00",
-  "tier": "food"
- },
- "evt-dJXKr6sDh4VS6mv": {
-  "event_date": "2026-07-28T02:00:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
-  "tier": "food"
- },
- "evt-dvqrVrsASbAfwOP": {
-  "event_date": "2026-07-28T01:00:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
-  "tier": "food"
+ "evt-eqbkatPn5ydHDA0": {
+  "event_date": "2026-08-07T19:00:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
+  "tier": "networking"
  },
  "evt-ft0RUinOiBulThW": {
   "event_date": "2026-08-05T18:00:00.000Z",
   "first_notified": "2026-07-28T07:48:52.564331+00:00",
   "tier": "food"
  },
- "evt-gtWXwKnAlF4s321": {
-  "event_date": "2026-07-30T19:00:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
-  "tier": "hackathon"
- },
- "evt-kqU17RuLWahwfVk": {
-  "event_date": "2026-07-31T01:00:00.000Z",
-  "first_notified": "2026-07-27T23:54:09.910961+00:00",
-  "tier": "hackathon"
- },
  "evt-l4PD87CvOxvzJHv": {
   "event_date": "2026-08-01T19:00:00.000Z",
   "first_notified": "2026-07-29T14:04:34.508858+00:00",
-  "tier": "food"
- },
- "evt-lutDq15FCBqcZ5v": {
-  "event_date": "2026-07-31T01:00:00.000Z",
-  "first_notified": "2026-07-28T07:48:52.564331+00:00",
   "tier": "food"
  },
  "evt-pMhXGRqu65aEuC8": {
@@ -169,14 +114,14 @@
   "first_notified": "2026-07-28T07:48:52.564331+00:00",
   "tier": "food"
  },
+ "evt-tX5DoFxwdMGDg6Y": {
+  "event_date": "2026-08-07T01:00:00.000Z",
+  "first_notified": "2026-08-03T14:04:59.402970+00:00",
+  "tier": "food"
+ },
  "evt-zmiNTm0S1Vw0tYU": {
   "event_date": "2026-08-07T16:00:00.000Z",
   "first_notified": "2026-07-27T23:54:09.910961+00:00",
   "tier": "hackathon"
- },
- "evt-zpIHGjUcqTYFkgJ": {
-  "event_date": "2026-07-30T00:00:00.000Z",
-  "first_notified": "2026-07-29T14:04:34.508858+00:00",
-  "tier": "networking"
  }
 }
