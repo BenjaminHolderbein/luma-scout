@@ -22,6 +22,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "docs")
 
 TIER_EMOJI = {"hackathon": "🛠️", "bigfree": "⭐", "food": "🍕"}
+# Chip tint per tier, so a selected filter is colour-coded to what it selects.
+ACCENT_BY_TIER = {"hackathon": "#c2691a", "bigfree": "#8a4fd0", "food": "#2f8f4e"}
 TIER_WORD = {"hackathon": "Hackathon", "bigfree": "Big & free", "food": "Free food"}
 SOURCE_LABEL = {"luma": "Luma", "devpost": "Devpost", "yc": "Y Combinator",
                 "eventbrite": "Eventbrite", "meetup": "Meetup"}
@@ -31,8 +33,68 @@ URGENCY = {
     "sold_out": ("🚫", "Sold out"),
 }
 
+# Tapping a tier isolates it; tapping the active one again returns to All.
+# Day headings, section headers and the whole later-this-month zone collapse
+# when a filter empties them, so the page never leaves stranded furniture
+# above nothing. Section tallies recount live.
+FILTER_JS = """
+(function(){
+  var bar=document.getElementById('filters');
+  if(!bar) return;
+  bar.hidden=false;
+  var btns=[].slice.call(bar.querySelectorAll('.fbtn'));
+  var cards=[].slice.call(document.querySelectorAll('.card'));
+  var none=document.getElementById('noresults');
+
+  function visibleAfter(el, stopSel){
+    var n=0, cur=el.nextElementSibling;
+    while(cur && !cur.matches(stopSel)){
+      if(cur.classList.contains('card') && !cur.hidden) n++;
+      cur=cur.nextElementSibling;
+    }
+    return n;
+  }
+
+  function apply(tier){
+    cards.forEach(function(c){
+      c.hidden = (tier!=='all' && c.getAttribute('data-tier')!==tier);
+    });
+    [].slice.call(document.querySelectorAll('.day')).forEach(function(d){
+      d.hidden = visibleAfter(d, '.day,.sect,.sectgap') === 0;
+    });
+    [].slice.call(document.querySelectorAll('.sect')).forEach(function(s){
+      var n=visibleAfter(s, '.sect');
+      var t=s.querySelector('.tally');
+      if(t) t.textContent = n + ' event' + (n===1?'':'s');
+      s.hidden = n===0;
+    });
+    var zone=document.querySelector('.zone');
+    if(zone) zone.hidden = zone.querySelectorAll('.card:not([hidden])').length===0;
+    var total=document.querySelectorAll('.card:not([hidden])').length;
+    if(none) none.hidden = total>0;
+    btns.forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-tier')===tier));
+    });
+  }
+
+  var active='all';
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var t=b.getAttribute('data-tier');
+      active = (t===active && t!=='all') ? 'all' : t;
+      apply(active);
+    });
+  });
+  apply('all');
+})();
+"""
+
 CSS = """
 *{box-sizing:border-box}
+/* the filter toggles the `hidden` attribute, and an author `display` rule beats
+   the UA stylesheet's [hidden]{display:none} -- .day is flex, so empty day
+   headings survived a filter until this landed */
+[hidden]{display:none!important}
 :root{
   --bg:#fbfaf8; --card:#fff; --ink:#17150f; --muted:#6b6559; --line:#e6e1d7;
   --accent:#b4451f; --chip:#f2ede3; --zone:#f8f6f1;
@@ -62,6 +124,21 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .lg{display:flex;align-items:center;gap:.3rem;font-size:.76rem;color:var(--muted);
   background:var(--chip);border-radius:999px;padding:.2rem .6rem;white-space:nowrap}
 .dot{width:.6rem;height:.6rem;border-radius:50%;flex:none}
+
+/* tier filter -- revealed by script, so it never sits there dead without JS */
+.filters{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.85rem}
+.filters[hidden]{display:none}
+.fbtn{font:inherit;font-size:.82rem;font-weight:600;color:var(--ink);cursor:pointer;
+  background:var(--card);border:1.5px solid var(--line);border-radius:999px;
+  padding:.32rem .75rem;display:flex;align-items:center;gap:.32rem;
+  -webkit-tap-highlight-color:transparent}
+.fbtn .n{color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.fbtn[aria-pressed=true]{border-color:var(--fc,var(--accent));
+  background:color-mix(in srgb, var(--fc,var(--accent)) 12%, transparent)}
+.fbtn[aria-pressed=true] .n{color:var(--fc,var(--accent))}
+.noresults{color:var(--muted);font-size:.9rem;font-style:italic;
+  border:1px dashed var(--line);border-radius:12px;padding:1.2rem;text-align:center;
+  margin-top:1.2rem}
 
 /* day heading */
 .day{display:flex;align-items:baseline;gap:.5rem;margin:1.9rem 0 .7rem}
@@ -211,7 +288,7 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
 
     name = rec.get("name") or "Event"
     hook = rk.get("hook") or ""
-    parts = [f'<div class="card rar-{rar}" style="--rar:{color}">',
+    parts = [f'<div class="card rar-{rar}" data-tier="{_esc(tier)}" style="--rar:{color}">',
              '<div class="top">',
              f'<span class="time">{_esc(_time_label(rec))}</span>',
              f'<span class="rar">{_esc(rar)}</span>',
@@ -312,6 +389,22 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
         f'{counts.get(n, 0)} {n}</span>'
         for n in reversed(rarity.ORDER) if counts.get(n))
 
+    tier_counts: dict[str, int] = {}
+    for _, rk in ordered:
+        t = rk.get("tier")
+        tier_counts[t] = tier_counts.get(t, 0) + 1
+    chips = [f'<button class="fbtn" type="button" data-tier="all" aria-pressed="true">'
+             f'All <span class="n">{len(ordered)}</span></button>']
+    for key, _, _ in [("hackathon", 0, 0), ("bigfree", 0, 0), ("food", 0, 0)]:
+        n = tier_counts.get(key, 0)
+        if not n:
+            continue
+        chips.append(
+            f'<button class="fbtn" type="button" data-tier="{key}" aria-pressed="false" '
+            f'style="--fc:{ACCENT_BY_TIER[key]}">{TIER_EMOJI[key]} {_esc(TIER_WORD[key])} '
+            f'<span class="n">{n}</span></button>')
+    filters = f'<div class="filters" id="filters" hidden>{"".join(chips)}</div>'
+
     blocked, degraded = [], []
     for n, s in (status or {}).items():
         if n.startswith("_"):
@@ -348,9 +441,11 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
   <p class="sub">{now_pt.strftime('%A, %B %-d')} onward · hackathons through
      {(now_pt + timedelta(days=30)).strftime('%B %-d')}</p>
   <div class="legend">{legend}</div>
+  {filters}
 </header>
 {warn}
 {''.join(body)}
+<div class="noresults" id="noresults" hidden>Nothing in that category this time.</div>
 {extra}
 <footer>
   Built by luma-scout for Benjamin Holderbein ·
@@ -358,7 +453,8 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
   Sources: {_esc(src_line)} ·
   <a href="https://github.com/BenjaminHolderbein/luma-scout">source</a>
 </footer>
-</div>"""
+</div>
+<script>{FILTER_JS}</script>"""
 
 
 def write(html_text: str, now: datetime) -> tuple[str, str]:
