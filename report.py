@@ -57,6 +57,21 @@ FILTER_JS = """
       e.target.classList.remove('flash');
   });
 
+  // the subscribe panel is a modal while open: any click outside it (the
+  // dimmed backdrop, the page, anything) closes it, as does Escape
+  document.addEventListener('click', function(e){
+    var d=document.querySelector('.subscribe[open]');
+    if(!d) return;
+    if(e.target.closest && (e.target.closest('.subbody') ||
+                            e.target.closest('.subscribe summary'))) return;
+    d.removeAttribute('open');
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key!=='Escape') return;
+    var d=document.querySelector('.subscribe[open]');
+    if(d) d.removeAttribute('open');
+  });
+
   var bar=document.getElementById('filters');
   if(!bar) return;
   bar.hidden=false;
@@ -203,11 +218,15 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   white-space:nowrap}
 .subscribe summary::-webkit-details-marker{display:none}
 .subscribe[open] summary{border-color:var(--accent);color:var(--accent)}
-.subbody{position:absolute;right:0;top:calc(100% + .45rem);z-index:20;
+/* open = modal: dimmed backdrop, panel centered on screen. Clicks anywhere
+   outside the panel close it (wired in script). */
+.subscribe[open]::before{content:"";position:fixed;inset:0;z-index:30;
+  background:rgba(12,10,6,.45)}
+.subbody{position:fixed;inset:0;margin:auto;z-index:31;height:fit-content;
   width:min(24rem, calc(100vw - 2rem));
   border:1px solid var(--line);border-radius:12px;background:var(--card);
-  padding:.9rem 1rem;font-size:.88rem;
-  box-shadow:0 8px 28px -8px rgba(0,0,0,.25)}
+  padding:1rem 1.1rem;font-size:.88rem;
+  box-shadow:0 12px 40px -8px rgba(0,0,0,.4)}
 .subbody p{margin:.2rem 0 .6rem}
 .subbody ol{margin:.2rem 0 .6rem;padding-left:1.3rem}
 .subbody li{margin-bottom:.35rem}
