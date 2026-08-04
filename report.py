@@ -240,10 +240,10 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .tag{background:var(--chip);border-radius:5px;padding:.08rem .4rem;font-size:.73rem}
 .new{background:var(--accent);color:#fff;border-radius:5px;padding:.08rem .4rem;
   font-size:.7rem;font-weight:700}
-/* the location is a pill; it only turns loud -- red -- when the event is
-   NOT in SF. Everything here is implicitly "in SF" except those, so the
-   exception must not whisper. */
-.loc{background:var(--chip);border-radius:999px;padding:.08rem .55rem;font-size:.73rem}
+/* the location chip only turns loud -- red -- when the event is NOT in SF.
+   Everything here is implicitly "in SF" except those, so the exception must
+   not whisper. Same radius as the neighbouring tags, deliberately. */
+.loc{background:var(--chip);border-radius:5px;padding:.08rem .45rem;font-size:.73rem}
 .loc.offsf{background:#e5231b;color:#fff;font-weight:800;letter-spacing:.01em}
 .empty{color:var(--muted);font-size:.9rem;font-style:italic;
   border:1px dashed var(--line);border-radius:12px;padding:1rem;text-align:center}
