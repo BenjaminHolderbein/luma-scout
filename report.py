@@ -83,13 +83,15 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 
 /* everything beyond this week sits in its own tinted zone, so the two halves
    of the report read as separate places rather than one continuous scroll */
-.zone{background:var(--zone);border:1px solid var(--line);border-radius:14px;
-  padding:.9rem .75rem 1rem;margin-top:2.6rem}
+.zone{background:var(--zone);border:1px solid var(--line);border-radius:16px;
+  padding:1.5rem 1.15rem 1.7rem;margin-top:2.9rem}
 .zone .sectgap{display:none}
 .zone .sect{margin-top:0;background:transparent;border:none;
   border-left:5px solid var(--accent);border-radius:0;padding:.15rem 0 .15rem .85rem}
-.zone .day{margin-top:1.5rem}
+.zone .day{margin-top:1.8rem}
 .zone .day h2{font-size:1rem}
+.zone .card{margin-bottom:.7rem}
+.zone .card:last-child{margin-bottom:0}
 
 /* event card -- rarity drives the whole outline and the chip.
    A uniform border, deliberately: an earlier version used a heavy 4px tab on
