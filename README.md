@@ -68,6 +68,17 @@ collect (luma discover + luma calendar crawl + devpost + yc + eventbrite + meetu
   picture of the week, not a diff.
 - **Sources are fault-isolated.** A broken scraper reports zero and the report
   says coverage was partial, rather than the run dying or quietly under-reporting.
+- **A dead run still makes a sound.** If the run itself crashes, a best-effort
+  "run failed" push goes to the same ntfy topic — the alternative is a silently
+  absent Monday notification, which is the easiest failure to miss.
+- **The ranker can't silently lose a hackathon.** Every guarantee downstream of
+  ranking (horizon, geography, cutoff, cap) exempts hackathons, so the one
+  remaining hole was the ranker omitting an event from its output. Those now get
+  listed unranked with a visible "ranking gap" warning in the report.
+- **The push headline is written by the ranker,** email-subject style — it leads
+  with the single most exciting concrete thing that week ("Anthropic hackathon
+  Sat + free YC afterparty") instead of a mechanical rarity count, which remains
+  as the fallback.
 
 ## Sources
 

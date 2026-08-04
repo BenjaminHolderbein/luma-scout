@@ -89,8 +89,37 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
     report_url = env.get("REPORT_URL", DEFAULT_REPORT_URL)
 
     by_id = {r["event_id"]: r for r in records}
+    # The ranker writes the push headline itself (a `_teaser` element) so the
+    # notification reads like a good email subject, not a mechanical count.
+    teaser = next((rk for rk in ranked if rk.get("event_id") == "_teaser"), None)
     selected = [rk for rk in ranked
                 if rk.get("tier") not in DROP_TIERS and rk.get("event_id") in by_id]
+
+    # The hackathon guarantee is enforced everywhere downstream of ranking
+    # (long horizon, geo widening, cutoff exemption, cap exemption) -- but the
+    # ranker itself omitting an event from its output would silently defeat all
+    # of it. Close that last gap: any hackathon-hint record the ranker never
+    # returned goes in unranked rather than vanishing. Hint events the ranker
+    # deliberately filed as none/excluded are respected (the hint false-positives
+    # on names, and `excluded` is the defense rule) but logged for visibility.
+    ranked_ids = {rk.get("event_id") for rk in ranked}
+    gaps = [r for r in records if r.get("is_hackathon_hint")
+            and r["event_id"] not in ranked_ids]
+    for r in gaps:
+        log(f"  WARNING: hackathon-hint event missing from ranking output, "
+            f"listing unranked: {r.get('name')!r}")
+        selected.append({"event_id": r["event_id"], "tier": "hackathon", "score": 40,
+                         "urgency": "none", "hook": "",
+                         "summary": "Unranked — looks like a hackathon but the "
+                                    "ranker skipped it, so it is listed as a safeguard."})
+    if gaps:
+        status = dict(status or {})
+        status["_rank_gaps"] = [r.get("name") or r["event_id"] for r in gaps]
+    demoted = [rk for rk in ranked if rk.get("tier") in DROP_TIERS
+               and by_id.get(rk.get("event_id"), {}).get("is_hackathon_hint")]
+    for rk in demoted:
+        log(f"  note: hackathon-hint event ranked {rk.get('tier')!r} (dropped): "
+            f"{by_id[rk['event_id']].get('name')!r}")
 
     # Quality cutoff, not a headcount: the report shows everything good enough
     # rather than an arbitrary top-N. Hackathons are exempt so exhaustive
@@ -121,7 +150,7 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
     index, archive = report_mod.write(html_text, now)
     log(f"Wrote {os.path.relpath(index, HERE)} and {os.path.relpath(archive, HERE)}")
 
-    title, message, tags = notify.build_teaser(pairs, report_url)
+    title, message, tags = notify.build_teaser(pairs, report_url, model_teaser=teaser)
     log("\n=== teaser preview ===")
     log(title)
     log(message)
@@ -234,5 +263,28 @@ def main() -> int:
                    keep_seen=args.keep_seen, status=status)
 
 
+def _push_crash_alert(exc: BaseException) -> None:
+    """Dead-man's switch. Per-source failures degrade gracefully into the
+    report, but a run that dies outright produces no report and no push -- and
+    an absent Monday notification is far too easy to not notice. Best-effort:
+    a broken .env or unreachable ntfy must not mask the original traceback."""
+    try:
+        env = load_env()
+        topic = env.get("NTFY_TOPIC")
+        if not topic:
+            return
+        notify.send_failure(topic, env.get("NTFY_SERVER", "https://ntfy.sh"),
+                            f"{type(exc).__name__}: {exc}")
+        log("Pushed failure alert.")
+    except Exception as push_err:  # noqa: BLE001
+        log(f"(could not push failure alert: {push_err})")
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except (SystemExit, KeyboardInterrupt):
+        raise
+    except Exception as e:  # noqa: BLE001
+        _push_crash_alert(e)
+        raise

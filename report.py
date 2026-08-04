@@ -464,6 +464,12 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
         warn += ('<div class="warn"><strong>Partial data.</strong> These sources returned '
                  'nothing this run, so coverage may be incomplete: '
                  + _esc(", ".join(degraded)) + ".</div>")
+    gaps = (status or {}).get("_rank_gaps") or []
+    if gaps:
+        warn += ('<div class="warn"><strong>Ranking gap.</strong> The ranker skipped '
+                 + ("this hackathon-looking event, so it is" if len(gaps) == 1
+                    else "these hackathon-looking events, so they are")
+                 + ' listed with a default rating: ' + _esc(", ".join(gaps)) + ".</div>")
 
     extra = (f'<p class="sub" style="margin-top:1.5rem">+{extra_count} more below '
              f'{_esc(min_rarity)} not shown.</p>' if extra_count > 0 else "")

@@ -31,13 +31,20 @@ def _short_when(rec: dict) -> str:
 
 
 def build_teaser(pairs: list[tuple[dict, dict]], report_url: str,
-                 date: datetime | None = None) -> tuple[str, str, list[str]]:
+                 date: datetime | None = None,
+                 model_teaser: dict | None = None) -> tuple[str, str, list[str]]:
     """The weekly push: the rarest few picks, in chronological order.
 
     The full list lives in the HTML report -- a plain-text notification is the
     wrong place for 30 events, and iOS truncates it anyway. This is a doorbell,
     not the report, so it leads with what the ranking actually rates highest
     rather than one item per tier.
+
+    The title is written by the ranking model when available (`model_teaser`,
+    the `_teaser` element of ranked.json) -- an email-subject-style headline
+    that leads with the week's single most exciting thing. The mechanical
+    rarity-count title is the fallback, so a run whose ranker skipped the
+    teaser still pushes something sensible.
     """
     date = date or datetime.now(PT)
     counts: dict[str, int] = {}
@@ -45,14 +52,23 @@ def build_teaser(pairs: list[tuple[dict, dict]], report_url: str,
         r = rarity.of(rk.get("tier"), rk.get("score"))
         counts[r] = counts.get(r, 0) + 1
     headline = ", ".join(f"{counts[n]} {n}" for n in reversed(rarity.ORDER) if counts.get(n))
-    title = (f"🗓️ Week of {date.strftime('%b %-d')} — {headline}" if headline
-             else f"🗓️ Week of {date.strftime('%b %-d')}")
+
+    model_title = ((model_teaser or {}).get("headline") or "").strip()
+    subline = ((model_teaser or {}).get("subline") or "").strip()
+    if model_title:
+        title = model_title
+    else:
+        title = (f"🗓️ Week of {date.strftime('%b %-d')} — {headline}" if headline
+                 else f"🗓️ Week of {date.strftime('%b %-d')}")
 
     # top few by rarity, then shown in the order they actually happen
     best = sorted(pairs, key=lambda p: -rarity.attention(p[1].get("tier"), p[1].get("score")))[:3]
     best.sort(key=lambda p: p[0].get("start_at") or "")
 
     lines = []
+    if subline:
+        lines.append(subline)
+        lines.append("")
     for rec, rk in best:
         tier_emoji = TIER_DISPLAY.get(rk.get("tier"), "").split(" ")[0]
         rar = rarity.of(rk.get("tier"), rk.get("score")).upper()
@@ -85,6 +101,18 @@ def publish_roundup(title: str, message: str, tags: list[str], topic: str,
         r.read()
 
 
+def send_failure(topic: str, server: str, error_text: str) -> None:
+    """Dead-man's switch: a crashed run must still make a sound.
+
+    Per-source failures degrade gracefully into the report, but if the run
+    itself dies there is no report -- and a missing Monday push is far too easy
+    to not notice. Priority 4 so it stands out from the weekly roundup."""
+    publish_roundup(
+        "⚠️ luma-scout run failed",
+        f"{error_text}\n\nNo report this week until this is fixed — check the run logs.",
+        ["warning"], topic, server, priority=4)
+
+
 def send_test(topic: str, server: str = "https://ntfy.sh",
               report_url: str = "https://benjaminholderbein.github.io/luma-scout/") -> None:
     sample = [
@@ -101,6 +129,8 @@ def send_test(topic: str, server: str = "https://ntfy.sh",
           "start_at": "2026-07-29T01:00:00.000Z", "address": "Mission", "price_display": "Free"},
          {"tier": "food", "hook": "Pizza + AI founders", "urgency": "none"}),
     ]
-    title, message, tags = build_teaser(sample, report_url)
+    teaser = {"headline": "Two hackathons + a 900-founder afterparty",
+              "subline": "Auth0×Stripe builds Thursday; YC's afterparty is filling fast."}
+    title, message, tags = build_teaser(sample, report_url, model_teaser=teaser)
     publish_roundup("🧪 " + title, message, tags, topic, server, priority=4,
                     click=report_url)

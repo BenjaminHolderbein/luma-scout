@@ -40,12 +40,30 @@ do not promote an event to a tier on the assumption that food or scale is
 implied. When there is genuinely nothing to go on, `none` is the right answer
 (except for hackathons, which are always included).
 
+## The push headline
+
+After ranking everything, write the phone notification that announces this
+report. It shows up on Ben's lock screen Monday morning; tapping it opens the
+full page. Write it like a great email subject line — enticing enough that he
+wants to tap, never clickbait:
+
+- `headline`: ≤55 characters. Lead with the single most exciting CONCRETE thing
+  this week (a standout hackathon, a huge free event, a genuinely great night),
+  not a generic roundup phrase. "Anthropic hackathon Sat + free YC afterparty"
+  beats "Your weekly SF events". If the week is genuinely thin, say so plainly
+  and pick the best of what's there — manufactured excitement reads as spam by
+  week three.
+- `subline`: one sentence, ≤90 characters, adding the next most compelling
+  thing or the week's shape. Plain text, no markdown.
+
 ## Output format
 
-Return ONLY a JSON array (no prose, no code fence), one object per event, in ANY
-order, using exactly these keys:
+Return ONLY a JSON array (no prose, no code fence). The FIRST element is the
+push headline, then one object per event, in ANY order, using exactly these
+keys:
 
 [
+  {"event_id":"_teaser","headline":"Anthropic hackathon Sat + free YC afterparty","subline":"3 hackathons open this week; Tuesday has free dinner twice."},
   {"event_id":"evt-...","tier":"food","score":86,"urgency":"filling",
    "hook":"Free dinner + DJ","summary":"Free dinner, open bar and a DJ after YC Startup School Day 1; founder crowd.","why":"free food, YC crowd"}
 ]
