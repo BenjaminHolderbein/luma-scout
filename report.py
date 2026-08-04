@@ -207,7 +207,12 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
    A uniform border, deliberately: an earlier version used a heavy 4px tab on
    the left only, which read as a lopsided edge next to the legendary glow. */
 .card{background:var(--card);border:1.5px solid var(--rar);
-  border-radius:10px;padding:.8rem .9rem;margin-bottom:.55rem}
+  border-radius:10px;padding:.8rem .9rem;margin-bottom:.55rem;position:relative}
+/* the whole card is the tap target: the title anchor stretches an invisible
+   overlay across it (so no JS and middle-click/long-press still work) */
+.card a.title::after{content:"";position:absolute;inset:0}
+.card:hover{border-color:color-mix(in srgb, var(--rar) 100%, transparent)}
+.card:hover a.title{color:var(--rar)}
 /* legendary gets a glow -- the only rarity that earns extra attention on a
    scan. Kept to ~2-3 cards a week by the ladder, so it stays special. The
    border is already uniform, so the halo sits evenly around the whole card. */
