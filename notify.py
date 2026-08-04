@@ -22,6 +22,18 @@ TIER_DISPLAY = {
 TIER_ORDER = {"hackathon": 0, "bigfree": 1, "food": 2}
 
 
+def _clip(s: str, limit: int) -> str:
+    """Word-safe truncation. The model is told the char limits, but a clamp in
+    code is what actually guarantees the lock screen never truncates us."""
+    s = (s or "").strip()
+    if len(s) <= limit:
+        return s
+    cut = s[: limit - 1]
+    if " " in cut:
+        cut = cut.rsplit(" ", 1)[0]
+    return cut.rstrip(" ,;:·-—+&") + "…"
+
+
 def _short_when(rec: dict) -> str:
     iso = rec.get("start_at")
     if not iso:
@@ -53,31 +65,33 @@ def build_teaser(pairs: list[tuple[dict, dict]], report_url: str,
         counts[r] = counts.get(r, 0) + 1
     headline = ", ".join(f"{counts[n]} {n}" for n in reversed(rarity.ORDER) if counts.get(n))
 
-    model_title = ((model_teaser or {}).get("headline") or "").strip()
-    subline = ((model_teaser or {}).get("subline") or "").strip()
+    # Sized for the collapsed lock-screen chip: iOS gives the title one line
+    # (~40 chars) and the body two or three, so every line is clamped, the
+    # rarity brackets are gone (the tier emoji carries it), and the URL is not
+    # spelled out -- tapping the notification opens the report anyway. No ntfy
+    # tag either: its emoji is prepended to the title and steals title width.
+    model_title = _clip((model_teaser or {}).get("headline") or "", 40)
+    subline = _clip((model_teaser or {}).get("subline") or "", 70)
     if model_title:
         title = model_title
     else:
-        title = (f"🗓️ Week of {date.strftime('%b %-d')} — {headline}" if headline
-                 else f"🗓️ Week of {date.strftime('%b %-d')}")
+        title = (f"Week of {date.strftime('%b %-d')} — {headline}" if headline
+                 else f"Week of {date.strftime('%b %-d')}")
 
-    # top few by rarity, then shown in the order they actually happen
-    best = sorted(pairs, key=lambda p: -rarity.attention(p[1].get("tier"), p[1].get("score")))[:3]
+    # top two by rarity, then shown in the order they actually happen
+    best = sorted(pairs, key=lambda p: -rarity.attention(p[1].get("tier"), p[1].get("score")))[:2]
     best.sort(key=lambda p: p[0].get("start_at") or "")
 
     lines = []
     if subline:
         lines.append(subline)
-        lines.append("")
     for rec, rk in best:
         tier_emoji = TIER_DISPLAY.get(rk.get("tier"), "").split(" ")[0]
-        rar = rarity.of(rk.get("tier"), rk.get("score")).upper()
-        lines.append(f"{tier_emoji} [{rar}] {rec.get('name', 'Event')} · {_short_when(rec)}")
+        lines.append(f"{tier_emoji} {_clip(rec.get('name') or 'Event', 30)} · {_short_when(rec)}")
     remaining = len(pairs) - len(best)
     if remaining > 0:
-        lines.append(f"+{remaining} more")
-    lines.append(f"\n→ Full report: {report_url}")
-    return title, "\n".join(lines), ["calendar"]
+        lines.append(f"+{remaining} more — tap for the full report")
+    return title, "\n".join(lines), []
 
 
 def publish_roundup(title: str, message: str, tags: list[str], topic: str,
@@ -129,8 +143,8 @@ def send_test(topic: str, server: str = "https://ntfy.sh",
           "start_at": "2026-07-29T01:00:00.000Z", "address": "Mission", "price_display": "Free"},
          {"tier": "food", "hook": "Pizza + AI founders", "urgency": "none"}),
     ]
-    teaser = {"headline": "Two hackathons + a 900-founder afterparty",
-              "subline": "Auth0×Stripe builds Thursday; YC's afterparty is filling fast."}
+    teaser = {"headline": "2 hackathons + 900-founder afterparty",
+              "subline": "Auth0×Stripe builds Thursday; YC afterparty filling fast."}
     title, message, tags = build_teaser(sample, report_url, model_teaser=teaser)
     publish_roundup("🧪 " + title, message, tags, topic, server, priority=4,
                     click=report_url)

@@ -47,13 +47,14 @@ report. It shows up on Ben's lock screen Monday morning; tapping it opens the
 full page. Write it like a great email subject line — enticing enough that he
 wants to tap, never clickbait:
 
-- `headline`: ≤55 characters. Lead with the single most exciting CONCRETE thing
-  this week (a standout hackathon, a huge free event, a genuinely great night),
-  not a generic roundup phrase. "Anthropic hackathon Sat + free YC afterparty"
-  beats "Your weekly SF events". If the week is genuinely thin, say so plainly
-  and pick the best of what's there — manufactured excitement reads as spam by
-  week three.
-- `subline`: one sentence, ≤90 characters, adding the next most compelling
+- `headline`: **≤40 characters, hard limit** — the lock screen shows one line
+  and truncates the rest, so front-load the excitement into the first 30. Lead
+  with the single most exciting CONCRETE thing this week (a standout hackathon,
+  a huge free event), not a generic roundup phrase. "4 hackathons + Privy's AI
+  day" beats "Your weekly SF events". If the week is genuinely thin, say so
+  plainly and pick the best of what's there — manufactured excitement reads as
+  spam by week three.
+- `subline`: one line, **≤70 characters**, adding the next most compelling
   thing or the week's shape. Plain text, no markdown.
 
 ## Output format
