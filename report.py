@@ -225,6 +225,19 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .card:hover a.title{color:var(--rar)}
 @keyframes cardflash{from{background:var(--rar)}to{background:var(--card)}}
 .card.flash{animation:cardflash .5s ease-out}
+/* legendary gets extra sauce on click: a scale pop, a glow burst, and a
+   shine sweeping across the card. Unspecified properties ease back to the
+   card's resting legendary glow on their own. */
+.card.rar-legendary.flash{animation:legflash .7s ease-out;overflow:hidden}
+@keyframes legflash{
+  0%{background:var(--rar)}
+  22%{transform:scale(1.03);box-shadow:0 0 38px 3px rgba(240,160,42,.95)}
+  100%{background:var(--card)}
+}
+.card.rar-legendary.flash::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);
+  transform:translateX(-130%);animation:legshine .7s ease-out;pointer-events:none}
+@keyframes legshine{to{transform:translateX(130%)}}
 /* legendary gets a glow -- the only rarity that earns extra attention on a
    scan. Kept to ~2-3 cards a week by the ladder, so it stays special. The
    border is already uniform, so the halo sits evenly around the whole card. */
