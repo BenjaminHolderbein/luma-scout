@@ -189,16 +189,25 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   border:1px dashed var(--line);border-radius:12px;padding:1.2rem;text-align:center;
   margin-top:1.2rem}
 
-/* subscribe explainer -- a chip that unfolds into the how-to */
-.subscribe{margin-top:.9rem}
+/* subscribe explainer -- a chip beside the title that unfolds into a
+   dropdown. The panel is absolutely positioned so opening it never
+   reflows the title row. */
+.titlerow{display:flex;align-items:center;justify-content:space-between;
+  gap:.6rem;flex-wrap:wrap}
+.titlerow h1{margin:0}
+.subscribe{position:relative;flex:none}
 .subscribe summary{display:inline-flex;align-items:center;gap:.3rem;cursor:pointer;
-  font-size:.8rem;font-weight:600;color:var(--ink);background:var(--card);
-  border:1.5px solid var(--line);border-radius:999px;padding:.28rem .7rem;
-  list-style:none;-webkit-tap-highlight-color:transparent;user-select:none}
+  font-size:.78rem;font-weight:600;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--line);border-radius:999px;padding:.26rem .65rem;
+  list-style:none;-webkit-tap-highlight-color:transparent;user-select:none;
+  white-space:nowrap}
 .subscribe summary::-webkit-details-marker{display:none}
 .subscribe[open] summary{border-color:var(--accent);color:var(--accent)}
-.subbody{border:1px solid var(--line);border-radius:12px;background:var(--card);
-  padding:.9rem 1rem;margin-top:.5rem;font-size:.88rem}
+.subbody{position:absolute;right:0;top:calc(100% + .45rem);z-index:20;
+  width:min(24rem, calc(100vw - 2rem));
+  border:1px solid var(--line);border-radius:12px;background:var(--card);
+  padding:.9rem 1rem;font-size:.88rem;
+  box-shadow:0 8px 28px -8px rgba(0,0,0,.25)}
 .subbody p{margin:.2rem 0 .6rem}
 .subbody ol{margin:.2rem 0 .6rem;padding-left:1.3rem}
 .subbody li{margin-bottom:.35rem}
@@ -569,7 +578,7 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
         web_url = f"{ntfy_server.rstrip('/')}/{ntfy_topic}"
         subscribe = f"""
 <details class="subscribe">
-<summary>🔔 Get this as a push every Monday</summary>
+<summary>Get the Monday push</summary>
 <div class="subbody">
 <p>A new report is generated every Monday around 7am PT, and a teaser with the
 week's top drops goes out over <a href="https://ntfy.sh" target="_blank"
@@ -633,10 +642,12 @@ read or post to it. This one only ever carries event headlines.</p>
 <style>{CSS}</style>
 <div class="wrap">
 <header>
-  <h1>Your week in SF</h1>
+  <div class="titlerow">
+    <h1>Your week in SF</h1>
+    {subscribe}
+  </div>
   <p class="sub">{now_pt.strftime('%A, %B %-d')} onward · hackathons through
      {(now_pt + timedelta(days=hack_window_days)).strftime('%B %-d')}</p>
-  {subscribe}
   {filters}
 </header>
 {warn}

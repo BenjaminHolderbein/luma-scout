@@ -58,16 +58,25 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   border:1px dashed var(--line);border-radius:12px;padding:1.2rem;text-align:center;
   margin-top:1.2rem}
 
-/* subscribe explainer -- a chip that unfolds into the how-to */
-.subscribe{margin-top:.9rem}
+/* subscribe explainer -- a chip beside the title that unfolds into a
+   dropdown. The panel is absolutely positioned so opening it never
+   reflows the title row. */
+.titlerow{display:flex;align-items:center;justify-content:space-between;
+  gap:.6rem;flex-wrap:wrap}
+.titlerow h1{margin:0}
+.subscribe{position:relative;flex:none}
 .subscribe summary{display:inline-flex;align-items:center;gap:.3rem;cursor:pointer;
-  font-size:.8rem;font-weight:600;color:var(--ink);background:var(--card);
-  border:1.5px solid var(--line);border-radius:999px;padding:.28rem .7rem;
-  list-style:none;-webkit-tap-highlight-color:transparent;user-select:none}
+  font-size:.78rem;font-weight:600;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--line);border-radius:999px;padding:.26rem .65rem;
+  list-style:none;-webkit-tap-highlight-color:transparent;user-select:none;
+  white-space:nowrap}
 .subscribe summary::-webkit-details-marker{display:none}
 .subscribe[open] summary{border-color:var(--accent);color:var(--accent)}
-.subbody{border:1px solid var(--line);border-radius:12px;background:var(--card);
-  padding:.9rem 1rem;margin-top:.5rem;font-size:.88rem}
+.subbody{position:absolute;right:0;top:calc(100% + .45rem);z-index:20;
+  width:min(24rem, calc(100vw - 2rem));
+  border:1px solid var(--line);border-radius:12px;background:var(--card);
+  padding:.9rem 1rem;font-size:.88rem;
+  box-shadow:0 8px 28px -8px rgba(0,0,0,.25)}
 .subbody p{margin:.2rem 0 .6rem}
 .subbody ol{margin:.2rem 0 .6rem;padding-left:1.3rem}
 .subbody li{margin-bottom:.35rem}
@@ -185,12 +194,11 @@ footer a{color:var(--muted)}
 </style>
 <div class="wrap">
 <header>
-  <h1>Your week in SF</h1>
-  <p class="sub">Monday, August 3 onward · hackathons through
-     October 2</p>
-  
+  <div class="titlerow">
+    <h1>Your week in SF</h1>
+    
 <details class="subscribe">
-<summary>🔔 Get this as a push every Monday</summary>
+<summary>Get the Monday push</summary>
 <div class="subbody">
 <p>A new report is generated every Monday around 7am PT, and a teaser with the
 week's top drops goes out over <a href="https://ntfy.sh" target="_blank"
@@ -208,6 +216,9 @@ rel="noopener">ntfy</a> — a free push service, no account needed.</p>
 read or post to it. This one only ever carries event headlines.</p>
 </div>
 </details>
+  </div>
+  <p class="sub">Monday, August 3 onward · hackathons through
+     October 2</p>
   <div class="filters" id="filters" hidden><div class="frow"><span class="flab">Category</span><button class="fbtn" type="button" data-group="tier" data-val="all" aria-pressed="true">All <span class="n">43</span></button><button class="fbtn" type="button" data-group="tier" data-val="hackathon" aria-pressed="false" style="--fc:#c2691a">🛠️ Hackathon <span class="n">21</span></button><button class="fbtn" type="button" data-group="tier" data-val="bigfree" aria-pressed="false" style="--fc:#8a4fd0">⭐ Big &amp; free <span class="n">9</span></button><button class="fbtn" type="button" data-group="tier" data-val="food" aria-pressed="false" style="--fc:#2f8f4e">🍕 Free food <span class="n">25</span></button></div><div class="frow"><span class="flab">Rarity</span><button class="fbtn" type="button" data-group="rarity" data-val="all" aria-pressed="true">All <span class="n">43</span></button><button class="fbtn" type="button" data-group="rarity" data-val="legendary" aria-pressed="false" style="--fc:#f0a02a"><span class="dot" style="background:#f0a02a"></span>Legendary <span class="n">2</span></button><button class="fbtn" type="button" data-group="rarity" data-val="epic" aria-pressed="false" style="--fc:#a44dd6"><span class="dot" style="background:#a44dd6"></span>Epic <span class="n">15</span></button><button class="fbtn" type="button" data-group="rarity" data-val="rare" aria-pressed="false" style="--fc:#2f9fe8"><span class="dot" style="background:#2f9fe8"></span>Rare <span class="n">13</span></button><button class="fbtn" type="button" data-group="rarity" data-val="uncommon" aria-pressed="false" style="--fc:#3fb950"><span class="dot" style="background:#3fb950"></span>Uncommon <span class="n">12</span></button><button class="fbtn" type="button" data-group="rarity" data-val="common" aria-pressed="false" style="--fc:#8b949e"><span class="dot" style="background:#8b949e"></span>Common <span class="n">1</span></button></div><div class="frow"><span class="flab">Source</span><button class="fbtn" type="button" data-group="source" data-val="all" aria-pressed="true">All <span class="n">43</span></button><button class="fbtn" type="button" data-group="source" data-val="luma" aria-pressed="false">Luma <span class="n">38</span></button><button class="fbtn" type="button" data-group="source" data-val="hackclub" aria-pressed="false">Hack Club <span class="n">2</span></button><button class="fbtn" type="button" data-group="source" data-val="cerebralvalley" aria-pressed="false">Cerebral Valley <span class="n">1</span></button><button class="fbtn" type="button" data-group="source" data-val="devpost" aria-pressed="false">Devpost <span class="n">1</span></button><button class="fbtn" type="button" data-group="source" data-val="yc" aria-pressed="false">Y Combinator <span class="n">1</span></button></div><div class="frow"><span class="flab">New</span><button class="fbtn" type="button" data-group="new" data-val="all" aria-pressed="true">All <span class="n">43</span></button><button class="fbtn" type="button" data-group="new" data-val="yes" aria-pressed="false" style="--fc:#b4451f">NEW this week <span class="n">16</span></button></div></div>
 </header>
 
@@ -216,7 +227,7 @@ read or post to it. This one only ever carries event headlines.</p>
 
 <footer>
   Built by luma-scout for Benjamin Holderbein ·
-  generated Mon Aug 3, 9:59 PM PT<br>
+  generated Mon Aug 3, 10:03 PM PT<br>
   Sources: Cerebral Valley 27, Devpost 1, Eventbrite 27, Hack Club 2, Luma 72, Meetup 18, Y Combinator 1 ·
   <a href="https://github.com/BenjaminHolderbein/luma-scout">source</a>
 </footer>
