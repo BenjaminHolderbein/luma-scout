@@ -97,6 +97,8 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .card a.title::after{content:"";position:absolute;inset:0}
 .card:hover{border-color:color-mix(in srgb, var(--rar) 100%, transparent)}
 .card:hover a.title{color:var(--rar)}
+@keyframes cardflash{from{background:var(--rar)}to{background:var(--card)}}
+.card.flash{animation:cardflash .5s ease-out}
 /* legendary gets a glow -- the only rarity that earns extra attention on a
    scan. Kept to ~2-3 cards a week by the ladder, so it stays special. The
    border is already uniform, so the halo sits evenly around the whole card. */
@@ -155,13 +157,23 @@ footer a{color:var(--muted)}
 
 <footer>
   Built by luma-scout for Benjamin Holderbein ·
-  generated Mon Aug 3, 9:46 PM PT<br>
+  generated Mon Aug 3, 9:48 PM PT<br>
   Sources: Cerebral Valley 27, Devpost 1, Eventbrite 27, Hack Club 2, Luma 72, Meetup 18, Y Combinator 1 ·
   <a href="https://github.com/BenjaminHolderbein/luma-scout">source</a>
 </footer>
 </div>
 <script>
 (function(){
+  // click flash: the card lights up in its rarity colour on the way out --
+  // the link opens in a new tab, so the flash plays out fully behind it
+  document.addEventListener('click', function(e){
+    var c=e.target.closest && e.target.closest('.card');
+    if(!c) return;
+    c.classList.remove('flash');
+    void c.offsetWidth;  // restart the animation on repeat clicks
+    c.classList.add('flash');
+  });
+
   var bar=document.getElementById('filters');
   if(!bar) return;
   bar.hidden=false;

@@ -42,6 +42,16 @@ URGENCY = {
 # above nothing. Section tallies recount live.
 FILTER_JS = """
 (function(){
+  // click flash: the card lights up in its rarity colour on the way out --
+  // the link opens in a new tab, so the flash plays out fully behind it
+  document.addEventListener('click', function(e){
+    var c=e.target.closest && e.target.closest('.card');
+    if(!c) return;
+    c.classList.remove('flash');
+    void c.offsetWidth;  // restart the animation on repeat clicks
+    c.classList.add('flash');
+  });
+
   var bar=document.getElementById('filters');
   if(!bar) return;
   bar.hidden=false;
@@ -213,6 +223,8 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .card a.title::after{content:"";position:absolute;inset:0}
 .card:hover{border-color:color-mix(in srgb, var(--rar) 100%, transparent)}
 .card:hover a.title{color:var(--rar)}
+@keyframes cardflash{from{background:var(--rar)}to{background:var(--card)}}
+.card.flash{animation:cardflash .5s ease-out}
 /* legendary gets a glow -- the only rarity that earns extra attention on a
    scan. Kept to ~2-3 cards a week by the ladder, so it stays special. The
    border is already uniform, so the halo sits evenly around the whole card. */
