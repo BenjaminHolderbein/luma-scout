@@ -6,10 +6,15 @@ tiers, a hard exclude, within-tier tie-breakers, and a food rubric.
 
 For EACH candidate event below:
 
-1. Decide the single tier it maps to (its HIGHEST-matching tier):
+1. Decide its PRIMARY tier (the HIGHEST tier it matches):
    `hackathon` > `bigfree` > `food`.
    - Matches none of the three → `"tier": "none"` (it will be dropped).
    - Defense/military/weapons → `"tier": "excluded"`.
+   Then set `also`: any LOWER tiers the event additionally satisfies on their
+   own rules — e.g. a big free conference that genuinely provides lunch is
+   `"tier":"bigfree","also":["food"]`; a hackathon with free dinner at a
+   major host could carry `"also":["bigfree","food"]`. Apply each tier's bar
+   strictly (the food rubric still applies). Usually this is `[]`.
    - **If the event is a hackathon, the tier is `hackathon`. Always.** Never
      assign a hackathon to another tier or to `none` because it looks small,
      niche, paid, or low-quality — that is the one failure Ben will notice.
@@ -65,7 +70,7 @@ keys:
 
 [
   {"event_id":"_teaser","headline":"Anthropic hackathon Sat + free YC afterparty","subline":"3 hackathons open this week; Tuesday has free dinner twice."},
-  {"event_id":"evt-...","tier":"food","score":86,"urgency":"filling",
+  {"event_id":"evt-...","tier":"food","also":[],"score":86,"urgency":"filling",
    "hook":"Free dinner + DJ","summary":"Free dinner, open bar and a DJ after YC Startup School Day 1; founder crowd.","why":"free food, YC crowd"}
 ]
 

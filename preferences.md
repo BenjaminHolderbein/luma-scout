@@ -6,14 +6,18 @@ him plan the whole week in one sitting.
 
 ## Priority tiers (STRICT, highest first)
 
-An event maps to the **highest** tier it matches. Every event in a higher tier
-ranks above every event in a lower tier.
+An event's **primary** tier is the highest one it matches — that is what
+drives its ranking, and every event in a higher tier ranks above every event
+in a lower tier. Lower tiers it *also* satisfies are reported as extra tags
+(the `also` field), so a big free conference that serves lunch shows both.
 
 ### 1. 🛠️ Hackathon — *be exhaustive*
 
-Hackathons, buildathons, build weekends, hack nights, jams, datathons, sprints —
-anything where people build and ship something, usually competitively, usually
-with prizes.
+Hackathons, buildathons, build weekends, build nights, hack nights, jams,
+datathons, sprints — anything where people show up to build and ship something.
+Competition and prizes are common but NOT required: a hands-on "bring your
+laptop, we're building tonight" evening (e.g. the VCN build-night series) is
+tier 1 even with no contest attached.
 
 **This tier is about coverage, not taste.** Ben wants to know about EVERY
 hackathon happening in San Francisco, without exception. Do not drop one because

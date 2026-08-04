@@ -52,12 +52,16 @@ FILTER_JS = """
 
   // A card survives only if it satisfies every group at once. `ignore` lets the
   // facet counts ask "how many would this chip give me?" without counting its
-  // own group against itself.
+  // own group against itself. Attributes are space-separated token lists so a
+  // card can carry several tags in one group (a big-free event that also has
+  // free food matches both category chips).
   function matches(card, state, ignore){
     for(var i=0;i<GROUPS.length;i++){
       var g=GROUPS[i];
       if(g===ignore) continue;
-      if(state[g]!=='all' && card.getAttribute('data-'+g)!==state[g]) return false;
+      if(state[g]==='all') continue;
+      var attr=' '+(card.getAttribute('data-'+g)||'')+' ';
+      if(attr.indexOf(' '+state[g]+' ')===-1) return false;
     }
     return true;
   }
@@ -293,10 +297,19 @@ def _deadline_line(rec: dict, now: datetime) -> str:
     return ""
 
 
+def _tags_of(rk: dict) -> list[str]:
+    """Primary tier first, then any extra tiers the ranker says it also
+    satisfies. Primary drives rarity and ordering; the rest are tags."""
+    tags = [rk.get("tier")]
+    tags += [t for t in (rk.get("also") or []) if t in TIER_WORD]
+    return list(dict.fromkeys(t for t in tags if t))
+
+
 def _card(rec: dict, rk: dict, now: datetime) -> str:
     rar = rarity.of(rk.get("tier"), rk.get("score"))
     color = rarity.COLOR[rar]
     tier = rk.get("tier")
+    tags = _tags_of(rk)
 
     bits = []
     where = rec.get("address") or rec.get("city_state")
@@ -322,13 +335,14 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
 
     name = rec.get("name") or "Event"
     hook = rk.get("hook") or ""
-    parts = [f'<div class="card rar-{rar}" data-tier="{_esc(tier)}" data-rarity="{rar}" '
+    parts = [f'<div class="card rar-{rar}" data-tier="{_esc(" ".join(tags))}" data-rarity="{rar}" '
              f'data-source="{_esc(rec.get("source"))}" '
              f'data-new="{"yes" if rec.get("_is_new") else "no"}" style="--rar:{color}">',
              '<div class="top">',
              f'<span class="time">{_esc(_time_label(rec))}</span>',
              f'<span class="rar">{_esc(rar)}</span>',
-             f'<span class="tag">{TIER_EMOJI.get(tier, "")} {_esc(TIER_WORD.get(tier, tier))}</span>',
+             *(f'<span class="tag">{TIER_EMOJI.get(t, "")} {_esc(TIER_WORD.get(t, t))}</span>'
+               for t in tags),
              '</div>',
              f'<a class="title" href="{_esc(rec.get("url"))}" target="_blank" rel="noopener">{_esc(name)}</a>']
     if hook and hook.lower().strip() not in name.lower():
@@ -424,7 +438,8 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
     tier_counts: dict[str, int] = {}
     source_counts: dict[str, int] = {}
     for rec, rk in ordered:
-        tier_counts[rk.get("tier")] = tier_counts.get(rk.get("tier"), 0) + 1
+        for t in _tags_of(rk):
+            tier_counts[t] = tier_counts.get(t, 0) + 1
         source_counts[rec.get("source")] = source_counts.get(rec.get("source"), 0) + 1
 
     def _chip(group: str, val: str, label: str, n: int, fc: str | None = None,
