@@ -51,6 +51,12 @@ def _in_window(rec: dict, now, window_days: int, hack_window_days: int) -> bool:
         # Devpost publishes a submission *period*, so a hackathon that opened in
         # April and closes in September has a start date in the past while still
         # being open to join. Judge those on the end date instead.
+        #
+        # Devpost ONLY. Eventbrite and Meetup also carry wide start/end spans,
+        # but there they mean stale or long-running listings -- allowing them
+        # here surfaced a hackathon dated five weeks in the past.
+        if rec.get("source") != "devpost":
+            return False
         end = common.parse_dt(rec.get("end_at"))
         return bool(is_hack and end and end >= now)
     days = hack_window_days if is_hack else window_days

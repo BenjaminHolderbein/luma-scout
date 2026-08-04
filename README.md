@@ -23,6 +23,35 @@ The whole thing exists to answer three questions, in this order:
 Anything matching none of the three is dropped, and defense/military events are
 excluded outright — the one rule that overrides even tier 1.
 
+## How the report reads
+
+Ordered **chronologically**, day by day, because that is how you actually plan a
+week. Priority is carried by **Fortnite-style loot rarity** instead of by
+grouping, so one scan down the timeline tells you what is worth your evening:
+
+| | | |
+|---|---|---|
+| 🟠 **Legendary** | drop everything | ~3 a week |
+| 🟣 **Epic** | really worth it | ~10 |
+| 🔵 **Rare** | solid pick | ~7 |
+| 🟢 **Uncommon** | decent option | ~11 |
+| ⚪ **Common** | filler | hidden by default |
+
+Rarity combines the tier (a floor: a weak hackathon still outranks a weak
+dinner) with the ranker's score (which dominates), so an outstanding free-dinner
+night can outshine a mediocre hackathon. See `rarity.py` — the constants are
+calibrated against a real week, and retuning them is a two-line change.
+
+Length is controlled by a **quality cutoff** (`MIN_RARITY`, default `uncommon`)
+rather than a headcount: everything good enough gets in. Raise it to `rare` for
+a shorter report. **Hackathons are exempt from the cutoff entirely** — coverage
+there is meant to be exhaustive.
+
+A divider separates this week from the rest of the month, and events that
+publish a genuine registration deadline (YC, Devpost) show it as its own line
+— that is the "needs signing up for in advance" case a weekly digest otherwise
+hides.
+
 ## What it does
 
 ```
@@ -32,7 +61,8 @@ collect (luma discover + luma calendar crawl + devpost + yc + eventbrite + meetu
 ```
 
 - **Two horizons:** 7 days for the week's events, 30 for hackathons (they need
-  registration lead time).
+  registration lead time). The report is one chronological list either way, with
+  a divider between this week and the rest of the month.
 - **`seen.json` is a badge, not a filter.** Events already reported still appear
   in the coming week's report — they're just not marked NEW. A weekly report is a
   picture of the week, not a diff.
@@ -59,6 +89,7 @@ collect (luma discover + luma calendar crawl + devpost + yc + eventbrite + meetu
 | `luma.py` / `filters.py` / `enrich.py` | Luma client, pre-filter, detail → record |
 | `rank.py` | ranking via headless `claude -p` |
 | `report.py` | HTML report renderer (writes `docs/`) |
+| `rarity.py` | tier + score → loot rarity, colours, and the quality cutoff |
 | `notify.py` | ntfy teaser builder + publisher |
 | `prompt.md` / `preferences.md` | ranking instructions + taste profile (edit freely) |
 | `state/seen.json` | NEW-badge state |

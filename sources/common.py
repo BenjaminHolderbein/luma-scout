@@ -116,6 +116,10 @@ RECORD_KEYS = (
     # sf_proximity: 'sf' | 'near' | None. forced_tier: set by hackathon-only
     # sources so the ranker cannot demote a hackathon out of tier 1.
     "sf_proximity", "forced_tier",
+    # Genuine registration deadlines, where a source publishes one (YC does;
+    # Luma mostly does not). The report gives these their own line, because
+    # "needs registering for in advance" is the thing a weekly digest hides.
+    "application_closes_at", "registration_closes_at",
 )
 
 

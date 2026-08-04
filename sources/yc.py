@@ -94,6 +94,10 @@ def collect(log=lambda _m: None) -> list[dict]:
             description=" ".join(bits),
             sf_proximity=where,
             forced_tier="hackathon" if etype == "hackathon" else None,
+            # Real deadlines, which the report surfaces as their own line -- YC
+            # is one of the few sources that publishes them.
+            application_closes_at=d.get("application_closes_at"),
+            registration_closes_at=d.get("registration_closes_at"),
         ))
 
     log(f"  yc: {len(events)} listed -> {len(out)} in the Bay")

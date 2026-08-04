@@ -22,6 +22,7 @@ from datetime import datetime, timezone
 
 import notify
 import rank as rank_mod
+import rarity
 import report as report_mod
 import sources
 import state
@@ -79,6 +80,10 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
     now = datetime.now(timezone.utc)
     seen = state.load()
     cap = int(env.get("MAX_PER_REPORT", "40"))
+    min_rarity = env.get("MIN_RARITY", "uncommon").strip().lower()
+    if min_rarity not in rarity.ORDER:
+        log(f"MIN_RARITY={min_rarity!r} not recognised; falling back to 'uncommon'.")
+        min_rarity = "uncommon"
     topic = env.get("NTFY_TOPIC")
     server = env.get("NTFY_SERVER", "https://ntfy.sh")
     report_url = env.get("REPORT_URL", DEFAULT_REPORT_URL)
@@ -86,21 +91,33 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
     by_id = {r["event_id"]: r for r in records}
     selected = [rk for rk in ranked
                 if rk.get("tier") not in DROP_TIERS and rk.get("event_id") in by_id]
-    selected.sort(key=lambda r: (TIER_ORDER.get(r.get("tier"), 9), -int(r.get("score") or 0)))
 
-    # Hackathons are never capped away -- exhaustive coverage is the point.
-    hacks = [rk for rk in selected if rk.get("tier") == "hackathon"]
-    rest = [rk for rk in selected if rk.get("tier") != "hackathon"]
+    # Quality cutoff, not a headcount: the report shows everything good enough
+    # rather than an arbitrary top-N. Hackathons are exempt so exhaustive
+    # coverage survives (their rarity floor already clears an 'uncommon' bar,
+    # but the exemption keeps that true if the ladder is ever retuned).
+    kept = [rk for rk in selected
+            if rarity.is_protected(rk.get("tier"))
+            or rarity.meets(rarity.of(rk.get("tier"), rk.get("score")), min_rarity)]
+
+    # Backstop only, so a freak week can't produce a hundred-card page.
+    kept.sort(key=lambda r: -rarity.attention(r.get("tier"), r.get("score")))
+    hacks = [rk for rk in kept if rk.get("tier") == "hackathon"]
+    rest = [rk for rk in kept if rk.get("tier") != "hackathon"]
     to_show = hacks + rest[:max(0, cap - len(hacks))]
     extra = len(selected) - len(to_show)
 
     pairs = [(by_id[rk["event_id"]], rk) for rk in to_show]
     counts: dict[str, int] = {}
     for _, rk in pairs:
-        counts[rk["tier"]] = counts.get(rk["tier"], 0) + 1
-    log(f"\nReport: {len(to_show)} events {counts} ({len(ranked)} classified, {extra} over cap)")
+        r = rarity.of(rk.get("tier"), rk.get("score"))
+        counts[r] = counts.get(r, 0) + 1
+    log(f"\nReport: {len(to_show)} events "
+        f"{ {k: counts[k] for k in reversed(rarity.ORDER) if k in counts} } "
+        f"({len(ranked)} classified, {extra} below the {min_rarity} cutoff)")
 
-    html_text = report_mod.build(pairs, now, status=status, extra_count=extra)
+    html_text = report_mod.build(pairs, now, status=status, extra_count=extra,
+                                 min_rarity=min_rarity)
     index, archive = report_mod.write(html_text, now)
     log(f"Wrote {os.path.relpath(index, HERE)} and {os.path.relpath(archive, HERE)}")
 
@@ -206,6 +223,13 @@ def main() -> int:
         log("Nothing found. Done."); return 0
     log(f"\nRanking {len(records)} candidates with claude ({env.get('RANK_MODEL', 'sonnet')})...")
     ranked = rank_mod.rank(records, model=env.get("RANK_MODEL", "sonnet"))
+    # Keep the raw inputs and verdicts around (both gitignored) -- calibrating
+    # the rarity ladder needs the actual score distribution, and re-running the
+    # crawl just to see it costs minutes.
+    with open(CANDIDATES, "w") as f:
+        json.dump(records, f)
+    with open(RANKED, "w") as f:
+        json.dump(ranked, f)
     return deliver(records, ranked, env, dry=args.dry_run,
                    keep_seen=args.keep_seen, status=status)
 
