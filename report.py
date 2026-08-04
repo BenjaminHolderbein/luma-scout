@@ -74,6 +74,24 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 /* event card -- rarity drives the left edge and the chip */
 .card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--rar);
   border-radius:10px;padding:.8rem .9rem;margin-bottom:.55rem}
+/* legendary gets a glow -- the only rarity that earns extra attention on a
+   scan. Kept to ~3 cards a week by the ladder, so it stays special. */
+.card.rar-legendary{
+  border-color:rgba(240,160,42,.55);
+  box-shadow:0 0 0 1px rgba(240,160,42,.28), 0 0 16px -3px rgba(240,160,42,.5);
+}
+.card.rar-legendary .rar{box-shadow:0 0 10px -2px rgba(240,160,42,.9)}
+@media (prefers-color-scheme:dark){
+  .card.rar-legendary{
+    box-shadow:0 0 0 1px rgba(240,160,42,.4), 0 0 22px -4px rgba(240,160,42,.75);
+  }
+}
+:root[data-theme=dark] .card.rar-legendary{
+  box-shadow:0 0 0 1px rgba(240,160,42,.4), 0 0 22px -4px rgba(240,160,42,.75);
+}
+:root[data-theme=light] .card.rar-legendary{
+  box-shadow:0 0 0 1px rgba(240,160,42,.28), 0 0 16px -3px rgba(240,160,42,.5);
+}
 .card .top{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
 .time{font-variant-numeric:tabular-nums;font-weight:700;font-size:.86rem;color:var(--ink);
   white-space:nowrap}
@@ -178,7 +196,7 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
 
     name = rec.get("name") or "Event"
     hook = rk.get("hook") or ""
-    parts = [f'<div class="card" style="--rar:{color}">',
+    parts = [f'<div class="card rar-{rar}" style="--rar:{color}">',
              '<div class="top">',
              f'<span class="time">{_esc(_time_label(rec))}</span>',
              f'<span class="rar">{_esc(rar)}</span>',
