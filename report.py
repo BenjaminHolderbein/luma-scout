@@ -51,6 +51,11 @@ FILTER_JS = """
     void c.offsetWidth;  // restart the animation on repeat clicks
     c.classList.add('flash');
   });
+  // hand the ::before back to the legendary idle throb once the flash is done
+  document.addEventListener('animationend', function(e){
+    if(e.animationName!=='legthrob' && e.target.classList)
+      e.target.classList.remove('flash');
+  });
 
   var bar=document.getElementById('filters');
   if(!bar) return;
@@ -225,9 +230,17 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .card:hover a.title{color:var(--rar)}
 @keyframes cardflash{from{background:var(--rar)}to{background:var(--card)}}
 .card.flash{animation:cardflash .5s ease-out}
+/* the legendary glow breathes at rest: a second halo layered on the static
+   glow, oscillating its opacity -- cheap to composite and theme-agnostic */
+.card.rar-legendary::before{content:"";position:absolute;inset:0;border-radius:10px;
+  box-shadow:0 0 26px -2px rgba(240,160,42,.75);opacity:.15;
+  animation:legthrob 2.4s ease-in-out infinite alternate;pointer-events:none}
+@keyframes legthrob{from{opacity:.15}to{opacity:.85}}
 /* legendary gets extra sauce on click: a scale pop, a glow burst, and a
    shine sweeping across the card. Unspecified properties ease back to the
-   card's resting legendary glow on their own. */
+   card's resting legendary glow on their own. The shine borrows the same
+   ::before as the throb, so .flash is removed on animationend to hand the
+   pseudo-element back to the throb. */
 .card.rar-legendary.flash{animation:legflash .7s ease-out;overflow:hidden}
 @keyframes legflash{
   0%{background:var(--rar)}
