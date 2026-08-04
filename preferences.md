@@ -47,10 +47,16 @@ provided) or nowhere.
 
 ### 3. 🍕 Free food & drink
 
-Food and/or drink is **provided free**: dinner served, open bar, bites/apps,
-catered lunch, complimentary happy-hour drinks. See the food rubric below.
-The point is a week's worth of free meals, so spread across the week is good —
-prefer variety of nights over five events on one evening.
+Food and/or drink is **provided free** at an event that is **free to attend**:
+dinner served, open bar, bites/apps, catered lunch, complimentary happy-hour
+drinks. See the food rubric below. Both halves required — a paid ticket with
+free canapés is not a free meal.
+
+**No field-relevance requirement.** Unlike tier 2, this tier is about the free
+meal, not the room. A non-tech event qualifies as long as attending costs
+nothing and the food or drink is genuinely provided — so a big city event
+that fails tier 2's tech scoping still lands HERE if it feeds you for free.
+Only events that are neither in Ben's field nor feeding him are `none`.
 
 An event matching **none** of these three → **drop it** (`"tier": "none"`).
 
@@ -63,8 +69,8 @@ An event matching **none** of these three → **drop it** (`"tier": "none"`).
 
 ## Ranking signals within a tier (soft, in priority order)
 
-1. **Free admission beats paid** (applies to tiers 1 and 3 — tier 2 is free by
-   definition).
+1. **Free admission beats paid** (applies to tier 1 — tiers 2 and 3 are free
+   by definition).
 2. **Relevance to Ben's field** — AI/ML, LLMs, agents, evals, data science,
    analytics, MLOps, startups/founders, applied engineering.
 3. **Signal of a good room** — notable hosts, companies, or speakers; a real
