@@ -193,12 +193,12 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
    dropdown. The panel is absolutely positioned so opening it never
    reflows the title row. */
 .titlerow{display:flex;align-items:center;justify-content:space-between;
-  gap:.6rem;flex-wrap:wrap}
+  gap:.45rem;flex-wrap:wrap}
 .titlerow h1{margin:0}
 .subscribe{position:relative;flex:none}
 .subscribe summary{display:inline-flex;align-items:center;gap:.3rem;cursor:pointer;
-  font-size:.78rem;font-weight:600;color:var(--ink);background:var(--card);
-  border:1.5px solid var(--line);border-radius:999px;padding:.26rem .65rem;
+  font-size:.8rem;font-weight:600;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--line);border-radius:999px;padding:.28rem .55rem;
   list-style:none;-webkit-tap-highlight-color:transparent;user-select:none;
   white-space:nowrap}
 .subscribe summary::-webkit-details-marker{display:none}
