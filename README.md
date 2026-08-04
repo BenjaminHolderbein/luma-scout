@@ -35,17 +35,18 @@ grouping, so one scan down the timeline tells you what is worth your evening:
 | 🟣 **Epic** | really worth it | ~10 |
 | 🔵 **Rare** | solid pick | ~7 |
 | 🟢 **Uncommon** | decent option | ~11 |
-| ⚪ **Common** | filler | hidden by default |
+| ⚪ **Common** | filler | shown in gray, visually receded |
+| 🩶 **Junk** | skip it | hidden by default |
 
 Rarity combines the tier (a floor: a weak hackathon still outranks a weak
 dinner) with the ranker's score (which dominates), so an outstanding free-dinner
 night can outshine a mediocre hackathon. See `rarity.py` — the constants are
 calibrated against a real week, and retuning them is a two-line change.
 
-Length is controlled by a **quality cutoff** (`MIN_RARITY`, default `uncommon`)
-rather than a headcount: everything good enough gets in. Raise it to `rare` for
-a shorter report. **Hackathons are exempt from the cutoff entirely** — coverage
-there is meant to be exhaustive.
+Length is controlled by a **quality cutoff** (`MIN_RARITY`, default `common` —
+i.e. show everything) rather than a headcount. Raise it to `uncommon` or `rare`
+for a shorter report. **Hackathons are exempt from the cutoff entirely** —
+coverage there is meant to be exhaustive.
 
 A divider separates this week from the rest of the month, and events that
 publish a genuine registration deadline (YC, Devpost) show it as its own line

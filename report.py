@@ -206,6 +206,11 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 /* legendary gets a glow -- the only rarity that earns extra attention on a
    scan. Kept to ~2-3 cards a week by the ladder, so it stays special. The
    border is already uniform, so the halo sits evenly around the whole card. */
+/* common is filler by definition -- shown, but visually receded so the scan
+   still lands on the colours that matter. junk only renders if the cutoff is
+   dropped below the default, and recedes further. */
+.card.rar-common{opacity:.72}
+.card.rar-junk{opacity:.55}
 .card.rar-legendary{box-shadow:0 0 17px -3px rgba(240,160,42,.55)}
 .card.rar-legendary .rar{box-shadow:0 0 10px -2px rgba(240,160,42,.9)}
 @media (prefers-color-scheme:dark){

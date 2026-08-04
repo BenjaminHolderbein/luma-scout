@@ -79,11 +79,11 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
     """Select -> render report -> push teaser -> persist state."""
     now = datetime.now(timezone.utc)
     seen = state.load()
-    cap = int(env.get("MAX_PER_REPORT", "40"))
-    min_rarity = env.get("MIN_RARITY", "uncommon").strip().lower()
+    cap = int(env.get("MAX_PER_REPORT", "60"))
+    min_rarity = env.get("MIN_RARITY", "common").strip().lower()
     if min_rarity not in rarity.ORDER:
-        log(f"MIN_RARITY={min_rarity!r} not recognised; falling back to 'uncommon'.")
-        min_rarity = "uncommon"
+        log(f"MIN_RARITY={min_rarity!r} not recognised; falling back to 'common'.")
+        min_rarity = "common"
     topic = env.get("NTFY_TOPIC")
     server = env.get("NTFY_SERVER", "https://ntfy.sh")
     report_url = env.get("REPORT_URL", DEFAULT_REPORT_URL)

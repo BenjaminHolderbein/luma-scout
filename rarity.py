@@ -39,12 +39,17 @@ TIER_BASE = {"hackathon": 25, "bigfree": 18, "food": 5}
 SCORE_WEIGHT = 0.75
 
 # name, min attention, colour, short blurb
+# `junk` is the won't-be-shown bucket: with MIN_RARITY=common (the default),
+# commons appear as gray filler cards and junk is what the cutoff hides. It
+# exists so "shown but gray" and "not shown" are separate rungs rather than
+# one overloaded bottom tier.
 LADDER = [
     ("legendary", 90, "#f0a02a", "Drop everything"),
     ("epic",      78, "#a44dd6", "Really worth it"),
     ("rare",      55, "#2f9fe8", "Solid pick"),
     ("uncommon",  30, "#3fb950", "Decent option"),
-    ("common",     0, "#8b949e", "Filler"),
+    ("common",    18, "#8b949e", "Filler"),
+    ("junk",       0, "#5f5a52", "Skip it"),
 ]
 ORDER = [name for name, *_ in LADDER][::-1]   # common -> legendary
 COLOR = {name: color for name, _, color, _ in LADDER}
@@ -65,7 +70,7 @@ def of(tier: str | None, score) -> str:
     for name, floor, _, _ in LADDER:
         if a >= floor:
             return name
-    return "common"
+    return "junk"
 
 
 def rank_index(name: str) -> int:
