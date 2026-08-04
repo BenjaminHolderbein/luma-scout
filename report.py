@@ -35,19 +35,19 @@ CSS = """
 *{box-sizing:border-box}
 :root{
   --bg:#fbfaf8; --card:#fff; --ink:#17150f; --muted:#6b6559; --line:#e6e1d7;
-  --accent:#b4451f; --chip:#f2ede3;
+  --accent:#b4451f; --chip:#f2ede3; --zone:#f4f1ea;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#14130f; --card:#1c1b16; --ink:#f0ece3; --muted:#9d968a; --line:#2e2c25;
-  --accent:#ff9d6e; --chip:#26241d;
+  --accent:#ff9d6e; --chip:#26241d; --zone:#1a1914;
 }}
 :root[data-theme=dark]{
   --bg:#14130f; --card:#1c1b16; --ink:#f0ece3; --muted:#9d968a; --line:#2e2c25;
-  --accent:#ff9d6e; --chip:#26241d;
+  --accent:#ff9d6e; --chip:#26241d; --zone:#1a1914;
 }
 :root[data-theme=light]{
   --bg:#fbfaf8; --card:#fff; --ink:#17150f; --muted:#6b6559; --line:#e6e1d7;
-  --accent:#b4451f; --chip:#f2ede3;
+  --accent:#b4451f; --chip:#f2ede3; --zone:#f4f1ea;
 }
 body{margin:0;background:var(--bg);color:var(--ink);
   font:16px/1.5 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
@@ -80,6 +80,16 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .sect .tally{display:inline-block;margin-top:.6rem;font-size:.75rem;font-weight:700;
   letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
 .sectgap{height:2.6rem}
+
+/* everything beyond this week sits in its own tinted zone, so the two halves
+   of the report read as separate places rather than one continuous scroll */
+.zone{background:var(--zone);border:1px solid var(--line);border-radius:14px;
+  padding:.9rem .75rem 1rem;margin-top:2.6rem}
+.zone .sectgap{display:none}
+.zone .sect{margin-top:0;background:transparent;border:none;
+  border-left:5px solid var(--accent);border-radius:0;padding:.15rem 0 .15rem .85rem}
+.zone .day{margin-top:1.5rem}
+.zone .day h2{font-size:1rem}
 
 /* event card -- rarity drives the whole outline and the chip.
    A uniform border, deliberately: an earlier version used a heavy 4px tab on
@@ -258,6 +268,7 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
     for key, items in days:
         later = _is_later(key)
         if later and not opened_later:
+            body.append('<section class="zone">')
             body.append(_section(
                 "Later this month",
                 f"{(week_end + timedelta(days=1)).strftime('%b %-d')} – "
@@ -282,6 +293,9 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
         body.append(f'<div class="day"><h2>{_esc(heading)}</h2>'
                     f'<span class="rel">{_esc(rel)}</span></div>')
         body.extend(_card(rec, rk, now) for rec, rk in items)
+
+    if opened_later:
+        body.append("</section>")
 
     if not days:
         body.append('<div class="empty">Nothing cleared the bar this week. '
