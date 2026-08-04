@@ -21,7 +21,7 @@ it looks small, unpolished, off-topic, paid, or unappealing. If it is a
 hackathon in or near SF, it goes in the report. Score it low if it's weak — but
 list it. A missed hackathon is the single worst failure this report can have.
 
-Hackathons run on a 30-day horizon (the rest of the report is 7 days) because
+Hackathons run on a 60-day horizon (the rest of the report is 7 days) because
 they need registration lead time. Include them every week until they happen.
 
 ### 2. ⭐ Big & free
@@ -32,11 +32,18 @@ they need registration lead time. Include them every week until they happen.
   A paid event does NOT belong in this tier no matter how big it is.
 - *Big* — real scale or real draw. Signals: high guest count, a well-known host
   (frontier AI lab, major company, big-name accelerator or VC), a named speaker
-  people would recognize, or conference/summit/demo-day/launch/festival framing.
+  people would recognize, or conference/summit/demo-day/launch framing.
 
-The idea is the events Ben would kick himself for missing — a big room he can
-walk into for nothing. A twelve-person meetup is not this tier, however nice.
-If it's free but small, it belongs in tier 3 (if food is provided) or nowhere.
+**And it must be Ben's world**: tech, AI/ML, data, startups/founders, or
+engineering. General city culture — street fairs, block parties, food/music
+festivals, concerts, museum nights, civic celebrations — is `none` no matter
+how big and free it is. "Downtown First Thursdays" is the canonical wrong
+answer here: huge, free, and not this report's job.
+
+The idea is the events Ben would kick himself for missing — a big room in his
+field he can walk into for nothing. A twelve-person meetup is not this tier,
+however nice. If it's free but small, it belongs in tier 3 (if food is
+provided) or nowhere.
 
 ### 3. 🍕 Free food & drink
 
@@ -79,7 +86,8 @@ An event matching **none** of these three → **drop it** (`"tier": "none"`).
 
 ## Data quality notes
 
-Events come from Luma, Devpost, Eventbrite, and Meetup, so quality varies:
+Events come from Luma, Cerebral Valley, Devpost, Y Combinator, AGI House,
+Hack Club, MLH, Eventbrite, and Meetup, so quality varies:
 
 - **Descriptions may be missing or truncated**, especially from Eventbrite and
   Meetup. Judge on what you have; don't invent details.
