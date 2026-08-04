@@ -240,10 +240,11 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .tag{background:var(--chip);border-radius:5px;padding:.08rem .4rem;font-size:.73rem}
 .new{background:var(--accent);color:#fff;border-radius:5px;padding:.08rem .4rem;
   font-size:.7rem;font-weight:700}
-/* not-SF warning chip -- deliberately loud. Everything in the report is
-   implicitly "in SF" except these, so the exception must not whisper. */
-.geo{background:#e5231b;color:#fff;border-radius:5px;padding:.08rem .45rem;
-  font-size:.73rem;font-weight:800;letter-spacing:.01em}
+/* the location is a pill; it only turns loud -- red -- when the event is
+   NOT in SF. Everything here is implicitly "in SF" except those, so the
+   exception must not whisper. */
+.loc{background:var(--chip);border-radius:999px;padding:.08rem .55rem;font-size:.73rem}
+.loc.offsf{background:#e5231b;color:#fff;font-weight:800;letter-spacing:.01em}
 .empty{color:var(--muted);font-size:.9rem;font-style:italic;
   border:1px dashed var(--line);border-radius:12px;padding:1rem;text-align:center}
 footer{margin-top:3rem;padding-top:1.1rem;border-top:1px solid var(--line);
@@ -333,10 +334,12 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
     where = rec.get("address") or rec.get("city_state")
     if rec.get("address_hidden") and not where:
         where = "address after RSVP"
+    near = rec.get("sf_proximity") == "near"
+    if near and not where:
+        where = _near_label(rec)
     if where:
-        bits.append(f"<span>{_esc(where[:52])}</span>")
-    if rec.get("sf_proximity") == "near":
-        bits.append(f'<span class="geo">📍 {_esc(_near_label(rec))}</span>')
+        cls = "loc offsf" if near else "loc"
+        bits.append(f'<span class="{cls}">{_esc(where[:52])}</span>')
     price = rec.get("price_display")
     if price:
         bits.append(f'<span class="tag">{_esc(price)}</span>')
