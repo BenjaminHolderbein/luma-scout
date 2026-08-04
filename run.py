@@ -146,7 +146,8 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
         f"({len(ranked)} classified, {extra} below the {min_rarity} cutoff)")
 
     html_text = report_mod.build(pairs, now, status=status, extra_count=extra,
-                                 min_rarity=min_rarity)
+                                 min_rarity=min_rarity,
+                                 hack_window_days=int(env.get("HACKATHON_WINDOW_DAYS", "60")))
     index, archive = report_mod.write(html_text, now)
     log(f"Wrote {os.path.relpath(index, HERE)} and {os.path.relpath(archive, HERE)}")
 
@@ -207,7 +208,10 @@ def main() -> int:
 
     env = load_env()
     window = int(env.get("WINDOW_DAYS", "7"))
-    hack_window = int(env.get("HACKATHON_WINDOW_DAYS", "30"))
+    # 60, not 30: two real Devpost hackathons (Sep 26 and Oct 3, checked Aug 3)
+    # sat outside a 30-day window while registration was open. Hackathons need
+    # the lead time; everything else keeps the 7-day week.
+    hack_window = int(env.get("HACKATHON_WINDOW_DAYS", "60"))
 
     if args.test_notify:
         if not env.get("NTFY_TOPIC"):
@@ -250,13 +254,14 @@ def main() -> int:
     records, status = gather(window, hack_window, args.limit)
     if not records:
         log("Nothing found. Done."); return 0
-    log(f"\nRanking {len(records)} candidates with claude ({env.get('RANK_MODEL', 'sonnet')})...")
-    ranked = rank_mod.rank(records, model=env.get("RANK_MODEL", "sonnet"))
-    # Keep the raw inputs and verdicts around (both gitignored) -- calibrating
-    # the rarity ladder needs the actual score distribution, and re-running the
-    # crawl just to see it costs minutes.
+    # Save the crawl BEFORE ranking: the crawl costs minutes and the rank step
+    # is the flakier of the two, so a rank failure must not throw the records
+    # away. (Both files are gitignored; they also feed rarity-ladder
+    # calibration, which needs the actual score distribution.)
     with open(CANDIDATES, "w") as f:
         json.dump(records, f)
+    log(f"\nRanking {len(records)} candidates with claude ({env.get('RANK_MODEL', 'sonnet')})...")
+    ranked = rank_mod.rank(records, model=env.get("RANK_MODEL", "sonnet"))
     with open(RANKED, "w") as f:
         json.dump(ranked, f)
     return deliver(records, ranked, env, dry=args.dry_run,
@@ -286,5 +291,6 @@ if __name__ == "__main__":
     except (SystemExit, KeyboardInterrupt):
         raise
     except Exception as e:  # noqa: BLE001
-        _push_crash_alert(e)
+        if "--dry-run" not in sys.argv:  # a test run's crash is not an incident
+            _push_crash_alert(e)
         raise

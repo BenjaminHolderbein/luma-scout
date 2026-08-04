@@ -85,10 +85,14 @@ collect (luma discover + luma calendar crawl + devpost + yc + eventbrite + meetu
 | Source | Method | Notes |
 |---|---|---|
 | Luma discover | public discover API | SF-curated, ~69 events |
-| Luma calendars | `/calendar/get-items` per calendar found in the feed | the big win — ~300 events; Luma's search API needs auth |
+| Luma calendars | `/calendar/get-items` per calendar | the big win; calendars come from seeds (resolved via the public `/url` endpoint), a self-widening learned list (`state/luma_calendars.json`), the luma.com/sf featured set, and the discover feed. Luma's search API needs auth |
+| Cerebral Valley | public JSON API | curated Bay AI/tech events; most records carry the Luma URL, so this doubles as a recall-repair layer for the Luma crawl |
 | Devpost | public JSON API | hackathons only; publishes a submission period, not a start time |
 | Y Combinator | Inertia.js `data-page` JSON on ycombinator.com/events | tags events `hackathon` explicitly; YC hackathons are often not on Luma |
-| Eventbrite | schema.org JSON-LD in search HTML | scraper; rate-limits aggressively, so requests are throttled |
+| AGI House | open events API behind app.agihouse.org | the archetypal announce-on-Discord host; tags hackathons explicitly ("Build Days") |
+| Hack Club | public JSON API | student hackathons that list nowhere else |
+| MLH | JSON embedded in the season page | student flagships (Cal Hacks / SF Hacks class), announced months out |
+| Eventbrite | schema.org JSON-LD in search HTML | scraper; SF queries for all tiers + Bay-city queries for hackathons; rate-limits aggressively, so requests are throttled |
 | Meetup | schema.org JSON-LD in `/find/` HTML | scraper |
 
 ## Layout

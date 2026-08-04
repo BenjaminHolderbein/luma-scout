@@ -14,7 +14,7 @@ import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime
+from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 PT = ZoneInfo("America/Los_Angeles")
@@ -24,7 +24,11 @@ UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
 
 # Richest data first. When the same event shows up on two platforms, the record
 # from the higher-priority source wins and the others land in `also_on`.
-SOURCE_PRIORITY = ["yc", "luma", "devpost", "eventbrite", "meetup"]
+# Cerebral Valley sits below luma deliberately: most CV records point at the
+# underlying Luma event, so a Luma-native record should win the merge and CV
+# land in `also_on`.
+SOURCE_PRIORITY = ["yc", "luma", "agihouse", "devpost", "mlh", "hackclub",
+                   "cerebralvalley", "eventbrite", "meetup"]
 
 
 # Minimum seconds between requests to the same host. Eventbrite starts serving
@@ -258,6 +262,13 @@ NEAR_BAY_TERMS = (
     "menlo park", "san jose", "santa clara", "sunnyvale", "redwood city",
     "south san francisco", "emeryville", "burlingame", "san mateo", "cupertino",
     "silicon valley", "stanford",
+    # Second ring, added after real losses: Dublin Hacx (San Ramon) and AGI
+    # House (Hillsborough) were both dropped as geographically unknown.
+    # "dublin, ca" keeps the comma-qualifier so Dublin, Ireland events crawled
+    # from worldwide Luma calendars don't sneak in as 'near'.
+    "san ramon", "fremont", "hayward", "daly city", "hillsborough",
+    "san bruno", "foster city", "walnut creek", "alameda", "milpitas",
+    "dublin, ca",
 )
 
 
@@ -272,6 +283,46 @@ def sf_match(*fields: str | None) -> str | None:
     if any(t in padded for t in NEAR_BAY_TERMS):
         return "near"
     return None
+
+
+# --- hackathon detection ----------------------------------------------------
+# Two strictness levels, because names and descriptions deserve different
+# treatment. The phrase list is safe to run over long descriptions. The
+# name-level check is far broader: real hackathons are called "HackGT",
+# "Quantathon", or "AGI Build Day", and against 72 live Devpost titles the
+# phrase list alone caught 26%. Broad matching is only ever applied to NAMES,
+# where the measured false-positive cost was three benign events across the
+# whole candidate corpus -- and a false positive merely widens collection;
+# the ranker still classifies.
+
+HACKATHON_PHRASES = re.compile(
+    r"\b(hack ?a ?thon|hackaton|buildathon|build[- ]?a[- ]?thon|hack night|"
+    r"hack day|hack week|code ?jam|game ?jam|datathon|makeathon|sprint weekend|"
+    r"build (?:day|weekend|night|fest|evening|session))\b",
+    re.I)
+# Any token containing 'hack': HackGT, SpartaHack, OrionHackathon, "Hack the
+# Change". This is the single pattern that recovers most real-world misses.
+_HACK_TOKEN = re.compile(r"\b[\w.'&:-]*hack[\w.'&:-]*\b", re.I)
+# -athon/-thon coinages: Quantathon, Dog-a-thon, AGI-thon. (The Olympic
+# -athlons don't match this suffix; the blacklist handles the charity-drive
+# ones, by suffix so "half-marathon"-style compounds stay excluded too.)
+_ATHON = re.compile(r"\b[\w-]*(?:a-?thon|-thon)\b", re.I)
+_ATHON_NOT_HACK = (
+    "marathon", "telethon",
+    "walkathon", "walk-a-thon", "readathon", "read-a-thon",
+    "danceathon", "dance-a-thon", "bikeathon", "bike-a-thon",
+    "swimathon", "swim-a-thon", "sale-a-thon",
+)
+
+
+def hackathon_name_hint(name: str | None) -> bool:
+    """Does this event NAME look like a hackathon? (Broad by design.)"""
+    if not name:
+        return False
+    if HACKATHON_PHRASES.search(name) or _HACK_TOKEN.search(name):
+        return True
+    return any(not m.group(0).lower().endswith(_ATHON_NOT_HACK)
+               for m in _ATHON.finditer(name))
 
 
 # --- dedup -----------------------------------------------------------------
@@ -300,28 +351,81 @@ def dedup_key(rec: dict) -> tuple:
     return (key, day)
 
 
+def url_key(rec: dict) -> str:
+    """Canonicalized event URL. Aggregators (Cerebral Valley) point at the
+    underlying luma.com event, which makes the URL a far stronger identity than
+    title+day -- CV also rounds some times to midnight UTC (shifting the PT
+    day) and strips title decorations, both of which defeat dedup_key."""
+    u = (rec.get("url") or "").strip().lower()
+    if not u:
+        return ""
+    u = re.sub(r"^https?://(www\.)?", "", u).split("?")[0].rstrip("/")
+    return re.sub(r"^lu\.ma/", "luma.com/", u)
+
+
+def _absorb(winner: dict, loser: dict) -> dict:
+    also = set(winner.get("also_on") or []) | set(loser.get("also_on") or [])
+    also.add(loser["source"])
+    also.discard(winner["source"])
+    winner["also_on"] = sorted(also)
+    # a loser sometimes knows something the winner doesn't
+    for field in ("description", "guest_count", "price_display", "address"):
+        if not winner.get(field) and loser.get(field):
+            winner[field] = loser[field]
+    return winner
+
+
 def merge(records: list[dict]) -> list[dict]:
     """Collapse cross-source duplicates, keeping the richest record and noting
-    the other platforms it also appeared on."""
+    the other platforms it also appeared on. Two passes: same canonical URL is
+    the same event whatever the title says; then title+day for cross-platform
+    duplicates that carry different URLs."""
     rank = {s: i for i, s in enumerate(SOURCE_PRIORITY)}
-    best: dict[tuple, dict] = {}
+
+    def _better(a: dict, b: dict) -> tuple[dict, dict]:
+        return (a, b) if rank.get(a["source"], 9) < rank.get(b["source"], 9) else (b, a)
+
+    by_url: dict[str, dict] = {}
+    unurled: list[dict] = []
     for rec in records:
-        k = dedup_key(rec)
-        if not k[0]:  # unusable title -> never merge, always keep
+        k = url_key(rec)
+        if not k:
+            unurled.append(rec)
+            continue
+        cur = by_url.get(k)
+        by_url[k] = rec if cur is None else _absorb(*_better(rec, cur))
+
+    def _is_midnight_utc(rec: dict) -> bool:
+        dt = parse_dt(rec.get("start_at"))
+        if not dt or dt.utcoffset() is None:
+            return False
+        u = dt.astimezone(timezone.utc)
+        return (u.hour, u.minute, u.second) == (0, 0, 0)
+
+    def _shift(day: str, n: int) -> str:
+        return (date.fromisoformat(day) + timedelta(days=n)).isoformat()
+
+    best: dict[tuple, dict] = {}
+    for rec in unurled + list(by_url.values()):
+        key, day = dedup_key(rec)
+        if not key:  # unusable title -> never merge, always keep
             best[("_uniq", rec.get("event_id") or id(rec))] = rec
             continue
+        k = (key, day)
         cur = best.get(k)
-        if cur is None:
-            best[k] = rec
-            continue
-        winner, loser = (rec, cur) if rank.get(rec["source"], 9) < rank.get(cur["source"], 9) else (cur, rec)
-        also = set(winner.get("also_on") or []) | set(loser.get("also_on") or [])
-        also.add(loser["source"])
-        also.discard(winner["source"])
-        winner["also_on"] = sorted(also)
-        # a loser sometimes knows something the winner doesn't
-        for field in ("description", "guest_count", "price_display", "address"):
-            if not winner.get(field) and loser.get(field):
-                winner[field] = loser[field]
-        best[k] = winner
+        if cur is None and day:
+            # A midnight-UTC start is a rounding artifact (Cerebral Valley does
+            # this), and midnight UTC is the *previous* evening in PT -- so the
+            # same event lands one PT day earlier than its real-timed twin.
+            # Look one day across, in both insertion orders, before declaring
+            # this a distinct event.
+            if _is_midnight_utc(rec):
+                alt = (key, _shift(day, 1))
+                if alt in best:
+                    k, cur = alt, best[alt]
+            else:
+                alt = (key, _shift(day, -1))
+                if alt in best and _is_midnight_utc(best[alt]):
+                    cur = best.pop(alt)
+        best[k] = rec if cur is None else _absorb(*_better(rec, cur))
     return list(best.values())

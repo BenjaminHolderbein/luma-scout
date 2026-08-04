@@ -12,15 +12,10 @@ Tier is decided later by the ranker, so at this stage we keep anything that
 """
 from __future__ import annotations
 
-import re
 from datetime import timedelta
 
-from . import common, devpost, eventbrite, luma_src, meetup, yc
-
-HACKATHON_HINT = re.compile(
-    r"\b(hack ?a ?thon|hackaton|buildathon|build[- ]?a[- ]?thon|hack night|"
-    r"hack day|hack week|code ?jam|game ?jam|datathon|makeathon|sprint weekend)\b",
-    re.I)
+from . import (agihouse, cerebralvalley, common, devpost, eventbrite, hackclub,
+               luma_src, meetup, mlh, yc)
 
 
 def looks_like_hackathon(rec: dict) -> bool:
@@ -29,14 +24,16 @@ def looks_like_hackathon(rec: dict) -> bool:
     An earlier version also matched on description, which flooded tier 1 with
     junk: Eventbrite and Meetup put unrelated "you might also like" events on a
     hackathon search page, and their JSON-LD descriptions leak page context. Only
-    Luma and Devpost have descriptions trustworthy enough to match on.
+    Luma and Devpost have descriptions trustworthy enough to match on -- and
+    those get the narrow phrase list, while names get the broad matcher (see
+    common.hackathon_name_hint for the recall numbers behind the split).
     """
     if rec.get("forced_tier") == "hackathon":
         return True
-    if HACKATHON_HINT.search(rec.get("name") or ""):
+    if common.hackathon_name_hint(rec.get("name")):
         return True
     if rec.get("source") in ("luma", "devpost"):
-        return bool(HACKATHON_HINT.search(rec.get("description") or ""))
+        return bool(common.HACKATHON_PHRASES.search(rec.get("description") or ""))
     return False
 
 
@@ -47,6 +44,12 @@ def _in_window(rec: dict, now, window_days: int, hack_window_days: int) -> bool:
         # missed hackathon is the failure mode Ben cares about), drop the rest.
         return looks_like_hackathon(rec)
     is_hack = looks_like_hackathon(rec)
+    if "T" not in (rec.get("start_at") or ""):
+        # Date-only listing (Eventbrite's JSON-LD publishes bare dates): the
+        # midnight-PT start is a parsing artifact, not a start time. Judge
+        # "past" on the end of that day, or the Monday-morning run drops every
+        # Monday event the moment it runs after 6am.
+        start = start + timedelta(hours=24)
     if start < now - timedelta(hours=6):
         # Devpost publishes a submission *period*, so a hackathon that opened in
         # April and closes in September has a start date in the past while still
@@ -103,8 +106,9 @@ def collect(now, window_days: int, hack_window_days: int, log=lambda _m: None,
         status["luma"] = {"ok": False, "count": 0, "error": str(e)[:300]}
 
     # --- the rest: cheap, already-complete records ---
-    for name, mod in (("devpost", devpost), ("yc", yc),
-                      ("eventbrite", eventbrite), ("meetup", meetup)):
+    for name, mod in (("devpost", devpost), ("yc", yc), ("agihouse", agihouse),
+                      ("cerebralvalley", cerebralvalley), ("hackclub", hackclub),
+                      ("mlh", mlh), ("eventbrite", eventbrite), ("meetup", meetup)):
         try:
             recs = mod.collect(log)
             records += recs

@@ -26,7 +26,9 @@ TIER_EMOJI = {"hackathon": "🛠️", "bigfree": "⭐", "food": "🍕"}
 ACCENT_BY_TIER = {"hackathon": "#c2691a", "bigfree": "#8a4fd0", "food": "#2f8f4e"}
 TIER_WORD = {"hackathon": "Hackathon", "bigfree": "Big & free", "food": "Free food"}
 SOURCE_LABEL = {"luma": "Luma", "devpost": "Devpost", "yc": "Y Combinator",
-                "eventbrite": "Eventbrite", "meetup": "Meetup"}
+                "eventbrite": "Eventbrite", "meetup": "Meetup",
+                "cerebralvalley": "Cerebral Valley", "agihouse": "AGI House",
+                "hackclub": "Hack Club", "mlh": "MLH"}
 URGENCY = {
     "filling": ("⚡", "Filling up"),
     "waitlist": ("⏳", "Waitlist"),
@@ -335,7 +337,8 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
 
 
 def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = None,
-          extra_count: int = 0, min_rarity: str = "uncommon") -> str:
+          extra_count: int = 0, min_rarity: str = "uncommon",
+          hack_window_days: int = 60) -> str:
     """pairs = [(record, ranked), ...] in any order; this sorts chronologically."""
     now_pt = now.astimezone(PT)
     today = now_pt.date()
@@ -361,7 +364,7 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
 
     n_week = sum(len(i) for k, i in days if not _is_later(k))
     n_later = sum(len(i) for k, i in days if _is_later(k))
-    horizon = today + timedelta(days=30)
+    horizon = today + timedelta(days=hack_window_days)
 
     def _section(title: str, rng: str, tally: str, first: bool) -> str:
         gap = "" if first else '<div class="sectgap"></div>'
@@ -377,7 +380,7 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
         if later and not opened_later:
             body.append('<section class="zone">')
             body.append(_section(
-                "Later this month",
+                "Beyond this week",
                 f"{(week_end + timedelta(days=1)).strftime('%b %-d')} – "
                 f"{horizon.strftime('%b %-d')} · worth registering for now",
                 f"{n_later} event{'s' if n_later != 1 else ''}",
@@ -464,6 +467,13 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
         warn += ('<div class="warn"><strong>Partial data.</strong> These sources returned '
                  'nothing this run, so coverage may be incomplete: '
                  + _esc(", ".join(degraded)) + ".</div>")
+    dead_seeds = ((((status or {}).get("luma") or {}).get("detail") or {})
+                  .get("dead_seeds") or [])
+    if dead_seeds:
+        warn += ('<div class="warn"><strong>Luma seeds unresolved.</strong> These '
+                 'seed calendars no longer resolve and contributed nothing — the '
+                 'list in sources/luma_src.py needs pruning: '
+                 + _esc(", ".join(dead_seeds)) + ".</div>")
     gaps = (status or {}).get("_rank_gaps") or []
     if gaps:
         warn += ('<div class="warn"><strong>Ranking gap.</strong> The ranker skipped '
@@ -486,7 +496,7 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
 <header>
   <h1>Your week in SF</h1>
   <p class="sub">{now_pt.strftime('%A, %B %-d')} onward · hackathons through
-     {(now_pt + timedelta(days=30)).strftime('%B %-d')}</p>
+     {(now_pt + timedelta(days=hack_window_days)).strftime('%B %-d')}</p>
   {filters}
 </header>
 {warn}

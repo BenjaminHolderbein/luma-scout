@@ -42,7 +42,7 @@ def _extract_array(text: str) -> list:
     return json.loads(text[start : end + 1])
 
 
-def rank(records: list[dict], model: str = "sonnet", timeout: int = 300) -> list[dict]:
+def rank(records: list[dict], model: str = "sonnet", timeout: int = 1200) -> list[dict]:
     """Return list of {event_id, tier, score, urgency, hook, summary_md, why}."""
     prompt = build_prompt(records)
     proc = subprocess.run(

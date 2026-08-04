@@ -12,16 +12,27 @@ import re
 
 from . import common
 
-BASE = "https://www.eventbrite.com/d/ca--san-francisco/{q}/"
+BASE = "https://www.eventbrite.com/d/{city}/{q}/"
 
-# Queries chosen to serve Ben's three tiers, in priority order.
+# (city, query) pairs chosen to serve Ben's three tiers, in priority order.
+# The Bay-city hackathon queries exist because Eventbrite's SF pages don't
+# return Oakland/Berkeley/Peninsula hackathons, and hackathons get the wider
+# geography anyway; the non-hackathon tiers stay SF-proper.
 # NOTE: the query does NOT determine the tier. Eventbrite pads search results
 # with unrelated "you might also like" events, so a hit on the hackathon query
 # proves nothing about the event itself -- sources.looks_like_hackathon() judges
 # each event on its own name.
 QUERIES = (
-    "hackathon", "hackathons", "free--hackathon",
-    "free--tech-networking", "free--ai", "free--food-and-drink",
+    ("ca--san-francisco", "hackathon"),
+    ("ca--san-francisco", "hackathons"),
+    ("ca--san-francisco", "free--hackathon"),
+    ("ca--san-francisco", "ai-hackathon"),
+    ("ca--oakland", "hackathon"),
+    ("ca--berkeley", "hackathon"),
+    ("ca--palo-alto", "hackathon"),
+    ("ca--san-francisco", "free--tech-networking"),
+    ("ca--san-francisco", "free--ai"),
+    ("ca--san-francisco", "free--food-and-drink"),
 )
 PAGES_PER_QUERY = 2
 _TAGS = re.compile(r"<[^>]+>")
@@ -45,9 +56,9 @@ def collect(log=lambda _m: None) -> list[dict]:
     pages = 0
     attempted = 0
     last_error: Exception | None = None
-    for slug in QUERIES:
+    for city, slug in QUERIES:
         for page in range(1, PAGES_PER_QUERY + 1):
-            url = BASE.format(q=slug) + (f"?page={page}" if page > 1 else "")
+            url = BASE.format(city=city, q=slug) + (f"?page={page}" if page > 1 else "")
             attempted += 1
             try:
                 page_html = common.http_get(url).decode("utf-8", "ignore")
