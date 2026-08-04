@@ -68,17 +68,17 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .day h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
 .day .rel{color:var(--muted);font-size:.8rem}
 .day::after{content:"";flex:1;height:1px;background:var(--line)}
-/* section break -- deliberately loud. A thin centred rule was too easy to
-   scroll straight past; when flipping the page you need to KNOW you have left
-   this week and are now looking at things to plan ahead for. */
-.sect{margin:1rem 0 .4rem;padding:1rem 1.1rem;border-radius:12px;
-  background:var(--chip);border:1px solid var(--line);border-left:5px solid var(--accent)}
-.sect.first{margin-top:.2rem}
-.sect + .day{margin-top:1.1rem}
-.sect h2{margin:0;font-size:1.3rem;letter-spacing:-.02em;line-height:1.2}
-.sect .range{display:block;color:var(--muted);font-size:.85rem;margin-top:.25rem}
-.sect .tally{display:inline-block;margin-top:.6rem;font-size:.75rem;font-weight:700;
-  letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
+/* section break -- typographic, not another box. It used to be a filled panel
+   with a chunky accent bar, which competed with the cards and borrowed the
+   warning callout's visual language. The weight now comes from type size, a
+   rule, and whitespace; the tinted zone below marks the second half. */
+.sect{margin:.2rem 0 1.2rem;padding:0 0 .75rem;border-bottom:2px solid var(--line)}
+.sect .row{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem}
+.sect h2{margin:0;font-size:1.45rem;letter-spacing:-.025em;line-height:1.15}
+.sect .tally{color:var(--muted);font-size:.8rem;font-weight:600;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.sect .range{display:block;color:var(--muted);font-size:.85rem;margin-top:.3rem}
+.sect + .day{margin-top:1.2rem}
 .sectgap{height:2.6rem}
 
 /* everything beyond this week sits in its own tinted zone, so the two halves
@@ -86,8 +86,7 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .zone{background:var(--zone);border:1px solid var(--line);border-radius:16px;
   padding:1.5rem 1.15rem 1.7rem;margin-top:2.9rem}
 .zone .sectgap{display:none}
-.zone .sect{margin-top:0;background:transparent;border:none;
-  border-left:5px solid var(--accent);border-radius:0;padding:.15rem 0 .15rem .85rem}
+.zone .sect{margin-top:0}
 .zone .day{margin-top:1.8rem}
 .zone .day h2{font-size:1rem}
 .zone .card{margin-bottom:.7rem}
@@ -261,9 +260,10 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
 
     def _section(title: str, rng: str, tally: str, first: bool) -> str:
         gap = "" if first else '<div class="sectgap"></div>'
-        return (f'{gap}<div class="sect{" first" if first else ""}"><h2>{_esc(title)}</h2>'
-                f'<span class="range">{_esc(rng)}</span>'
-                f'<span class="tally">{_esc(tally)}</span></div>')
+        return (f'{gap}<div class="sect">'
+                f'<div class="row"><h2>{_esc(title)}</h2>'
+                f'<span class="tally">{_esc(tally)}</span></div>'
+                f'<span class="range">{_esc(rng)}</span></div>')
 
     body = []
     opened_week = opened_later = False
