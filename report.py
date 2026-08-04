@@ -62,6 +62,7 @@ FILTER_JS = """
   document.addEventListener('click', function(e){
     var d=document.querySelector('.subscribe[open]');
     if(!d) return;
+    if(e.target.closest && e.target.closest('.subclose')){ d.removeAttribute('open'); return; }
     if(e.target.closest && (e.target.closest('.subbody') ||
                             e.target.closest('.subscribe summary'))) return;
     d.removeAttribute('open');
@@ -227,7 +228,11 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   border:1px solid var(--line);border-radius:12px;background:var(--card);
   padding:1rem 1.1rem;font-size:.88rem;
   box-shadow:0 12px 40px -8px rgba(0,0,0,.4)}
-.subbody p{margin:.2rem 0 .6rem}
+.subclose{position:absolute;top:.55rem;right:.6rem;font:inherit;font-size:.9rem;
+  line-height:1;color:var(--muted);background:none;border:0;cursor:pointer;
+  padding:.3rem;-webkit-tap-highlight-color:transparent}
+.subclose:hover{color:var(--ink)}
+.subbody p{margin:.2rem 0 .6rem;padding-right:1.4rem}
 .subbody ol{margin:.2rem 0 .6rem;padding-left:1.3rem}
 .subbody li{margin-bottom:.35rem}
 .subbody a{color:var(--accent)}
@@ -599,6 +604,7 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
 <details class="subscribe">
 <summary>Get the Monday push</summary>
 <div class="subbody">
+<button class="subclose" type="button" aria-label="Close">✕</button>
 <p>A new report is generated every Monday around 7am PT, and a teaser with the
 week's top drops goes out over <a href="https://ntfy.sh" target="_blank"
 rel="noopener">ntfy</a> — a free push service, no account needed.</p>
