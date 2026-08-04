@@ -44,11 +44,11 @@ FILTER_JS = """
   var bar=document.getElementById('filters');
   if(!bar) return;
   bar.hidden=false;
-  var GROUPS=['tier','rarity','source'];
+  var GROUPS=['tier','rarity','source','new'];
   var btns=[].slice.call(bar.querySelectorAll('.fbtn'));
   var cards=[].slice.call(document.querySelectorAll('.card'));
   var none=document.getElementById('noresults');
-  var active={tier:'all',rarity:'all',source:'all'};
+  var active={tier:'all',rarity:'all',source:'all','new':'all'};
 
   // A card survives only if it satisfies every group at once. `ignore` lets the
   // facet counts ask "how many would this chip give me?" without counting its
@@ -323,7 +323,8 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
     name = rec.get("name") or "Event"
     hook = rk.get("hook") or ""
     parts = [f'<div class="card rar-{rar}" data-tier="{_esc(tier)}" data-rarity="{rar}" '
-             f'data-source="{_esc(rec.get("source"))}" style="--rar:{color}">',
+             f'data-source="{_esc(rec.get("source"))}" '
+             f'data-new="{"yes" if rec.get("_is_new") else "no"}" style="--rar:{color}">',
              '<div class="top">',
              f'<span class="time">{_esc(_time_label(rec))}</span>',
              f'<span class="rar">{_esc(rar)}</span>',
@@ -451,6 +452,13 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
     src += [_chip("source", s, _esc(SOURCE_LABEL.get(s, s)), n)
             for s, n in sorted(source_counts.items(), key=lambda kv: -kv[1]) if s]
     rows.append('<div class="frow"><span class="flab">Source</span>' + "".join(src) + "</div>")
+    # New -- only offered when the report actually distinguishes (first runs
+    # and cleared-state weeks mark everything NEW, where the chip is noise)
+    n_new = sum(1 for rec, _ in ordered if rec.get("_is_new"))
+    if 0 < n_new < len(ordered):
+        new_row = [_chip("new", "all", "All", len(ordered)),
+                   _chip("new", "yes", "NEW this week", n_new, "#b4451f")]
+        rows.append('<div class="frow"><span class="flab">New</span>' + "".join(new_row) + "</div>")
 
     filters = f'<div class="filters" id="filters" hidden>{"".join(rows)}</div>'
 
