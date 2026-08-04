@@ -1,4 +1,24 @@
 {
+ "devpost-29242": {
+  "event_date": "2026-09-03T00:00:00-07:00",
+  "first_notified": "2026-08-04T01:22:37.766337+00:00",
+  "tier": "hackathon"
+ },
+ "eventbrite-1980043150364": {
+  "event_date": "2026-08-06",
+  "first_notified": "2026-08-04T01:22:37.766337+00:00",
+  "tier": "bigfree"
+ },
+ "eventbrite-1992040943085": {
+  "event_date": "2026-08-11",
+  "first_notified": "2026-08-04T01:22:37.766337+00:00",
+  "tier": "hackathon"
+ },
+ "eventbrite-1992938152663": {
+  "event_date": "2026-08-08",
+  "first_notified": "2026-08-04T01:22:37.766337+00:00",
+  "tier": "food"
+ },
  "evt-0sSWbrrGAptd29x": {
   "event_date": "2026-08-11T00:00:00.000Z",
   "first_notified": "2026-08-04T00:24:30.542288+00:00",
@@ -149,9 +169,19 @@
   "first_notified": "2026-08-03T14:04:59.402970+00:00",
   "tier": "networking"
  },
+ "evt-fffDMma2pREODqJ": {
+  "event_date": "2026-08-11T03:00:00.000Z",
+  "first_notified": "2026-08-04T01:22:37.766337+00:00",
+  "tier": "food"
+ },
  "evt-ft0RUinOiBulThW": {
   "event_date": "2026-08-05T18:00:00.000Z",
   "first_notified": "2026-07-28T07:48:52.564331+00:00",
+  "tier": "food"
+ },
+ "evt-jAyGfKsWMNr3Qr5": {
+  "event_date": "2026-08-10T01:00:00.000Z",
+  "first_notified": "2026-08-04T01:22:37.766337+00:00",
   "tier": "food"
  },
  "evt-l4PD87CvOxvzJHv": {
@@ -193,5 +223,10 @@
   "event_date": "2026-08-05T15:00:00.000Z",
   "first_notified": "2026-08-04T00:24:30.542288+00:00",
   "tier": "food"
+ },
+ "yc-3817": {
+  "event_date": "2026-08-23T10:00:00.000Z",
+  "first_notified": "2026-08-04T01:22:37.766337+00:00",
+  "tier": "hackathon"
  }
 }
