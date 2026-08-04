@@ -6,9 +6,13 @@
 candidates.json
 rank_prompt.txt
 ranked.json
+source_status.json
 __pycache__/
 *.pyc
 .venv/
 
 # NOTE: state/seen.json IS committed (it's the persistence layer for the
 # cloud routine). Nothing sensitive in it — only Luma event ids + dates.
+
+# Playwright MCP scratch
+.playwright-mcp/

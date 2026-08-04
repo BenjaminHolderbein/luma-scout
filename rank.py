@@ -12,9 +12,10 @@ HERE = os.path.dirname(__file__)
 
 # Fields the ranker actually needs (keeps the prompt small).
 RANK_FIELDS = (
-    "event_id", "name", "when_local", "address", "city_state", "guest_count",
-    "is_free", "price_display", "is_sold_out", "is_near_capacity",
-    "spots_remaining", "waitlist_active", "categories", "hosts", "description",
+    "event_id", "source", "name", "when_local", "address", "city_state",
+    "sf_proximity", "guest_count", "is_free", "price_display", "is_sold_out",
+    "is_near_capacity", "spots_remaining", "waitlist_active", "categories",
+    "hosts", "description", "also_on", "is_hackathon_hint",
 )
 
 

@@ -14,11 +14,10 @@ PT = ZoneInfo("America/Los_Angeles")
 
 TIER_DISPLAY = {
     "hackathon": "🛠️ Hackathons",
+    "bigfree": "⭐ Big & free",
     "food": "🍕 Free food & drink",
-    "networking": "🤝 Networking",
-    "seminar": "🎓 Seminars",
 }
-TIER_ORDER = {"hackathon": 0, "food": 1, "networking": 2, "seminar": 3}
+TIER_ORDER = {"hackathon": 0, "bigfree": 1, "food": 2}
 URGENCY_EMOJI = {"filling": "⚡", "waitlist": "⏳", "sold_out": "🚫"}
 
 
@@ -74,17 +73,51 @@ def build_roundup(selected: list[tuple[dict, dict]], date: datetime | None = Non
     return title, message, tags
 
 
+def build_teaser(pairs: list[tuple[dict, dict]], report_url: str,
+                 date: datetime | None = None) -> tuple[str, str, list[str]]:
+    """The weekly push: headline counts plus the top pick from each tier.
+
+    The full list lives in the HTML report -- a plain-text notification is the
+    wrong place for 30 events, and iOS truncates it anyway. This is a doorbell,
+    not the report.
+    """
+    date = date or datetime.now(PT)
+    groups: dict[str, list] = {}
+    for rec, rk in pairs:
+        groups.setdefault(rk.get("tier"), []).append((rec, rk))
+
+    counts = []
+    for tier in sorted(groups, key=lambda t: TIER_ORDER.get(t, 9)):
+        n = len(groups[tier])
+        noun = {"hackathon": "hackathon", "bigfree": "big & free", "food": "free food"}.get(tier, tier)
+        counts.append(f"{n} {noun}{'s' if tier == 'hackathon' and n != 1 else ''}")
+    title = f"🗓️ Week of {date.strftime('%b %-d')} — " + ", ".join(counts) if counts \
+        else f"🗓️ Week of {date.strftime('%b %-d')}"
+
+    lines = []
+    for tier in sorted(groups, key=lambda t: TIER_ORDER.get(t, 9)):
+        rec, rk = groups[tier][0]
+        emoji = TIER_DISPLAY.get(tier, "").split(" ")[0]
+        extra = len(groups[tier]) - 1
+        line = f"{emoji} {rec.get('name', 'Event')} · {_short_when(rec)}"
+        if extra > 0:
+            line += f"  (+{extra} more)"
+        lines.append(line)
+    lines.append(f"\n→ Full report: {report_url}")
+    return title, "\n".join(lines), ["calendar"]
+
+
 def publish_roundup(title: str, message: str, tags: list[str], topic: str,
-                    server: str, priority: int = 3) -> None:
+                    server: str, priority: int = 3, click: str | None = None) -> None:
     payload = {
         "topic": topic,
         "title": title,
         "message": message,
         "tags": tags,
         "priority": priority,
-        # No `click`: tapping the notification body does nothing; the per-event
-        # luma.com links inside the message are the only navigation.
     }
+    if click:
+        payload["click"] = click  # tapping the notification opens the report
     req = urllib.request.Request(
         server.rstrip("/") + "/",
         data=json.dumps(payload).encode("utf-8"),
@@ -95,17 +128,22 @@ def publish_roundup(title: str, message: str, tags: list[str], topic: str,
         r.read()
 
 
-def send_test(topic: str, server: str = "https://ntfy.sh") -> None:
+def send_test(topic: str, server: str = "https://ntfy.sh",
+              report_url: str = "https://benjaminholderbein.github.io/luma-scout/") -> None:
     sample = [
         ({"name": "Built Different: Auth0 × Stripe Hackathon", "url": "https://luma.com/aaaa",
           "start_at": "2026-07-30T19:00:00.000Z", "address": "SoMa", "price_display": "Free"},
          {"tier": "hackathon", "hook": "$2k prizes + free lunch", "urgency": "none"}),
+        ({"name": "Mistral Vibe Hackathon", "url": "https://luma.com/cccc",
+          "start_at": "2026-08-23T19:00:00.000Z", "address": "SoMa", "price_display": "Free"},
+         {"tier": "hackathon", "hook": "Weekend build, Mistral credits", "urgency": "none"}),
         ({"name": "YC Startup School Afterparty", "url": "https://luma.com/z9teb942",
           "start_at": "2026-07-28T01:00:00.000Z", "address": "Frontier Tower", "price_display": "Free"},
-         {"tier": "food", "hook": "Free dinner, open bar + DJ", "urgency": "filling"}),
+         {"tier": "bigfree", "hook": "Free, 900 founders", "urgency": "filling"}),
         ({"name": "AI Nerd Meet Up", "url": "https://luma.com/bbbb",
           "start_at": "2026-07-29T01:00:00.000Z", "address": "Mission", "price_display": "Free"},
-         {"tier": "food", "hook": "Pizza + invite-only AI founders", "urgency": "none"}),
+         {"tier": "food", "hook": "Pizza + AI founders", "urgency": "none"}),
     ]
-    title, message, tags = build_roundup(sample)
-    publish_roundup("🧪 " + title, message, tags, topic, server, priority=4)
+    title, message, tags = build_teaser(sample, report_url)
+    publish_roundup("🧪 " + title, message, tags, topic, server, priority=4,
+                    click=report_url)
