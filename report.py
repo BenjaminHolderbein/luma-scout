@@ -68,8 +68,18 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .day h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
 .day .rel{color:var(--muted);font-size:.8rem}
 .day::after{content:"";flex:1;height:1px;background:var(--line)}
-.divider{margin:2.4rem 0 .4rem;text-align:center;color:var(--muted);font-size:.78rem;
-  text-transform:uppercase;letter-spacing:.08em}
+/* section break -- deliberately loud. A thin centred rule was too easy to
+   scroll straight past; when flipping the page you need to KNOW you have left
+   this week and are now looking at things to plan ahead for. */
+.sect{margin:1rem 0 .4rem;padding:1rem 1.1rem;border-radius:12px;
+  background:var(--chip);border:1px solid var(--line);border-left:5px solid var(--accent)}
+.sect.first{margin-top:.2rem}
+.sect + .day{margin-top:1.1rem}
+.sect h2{margin:0;font-size:1.3rem;letter-spacing:-.02em;line-height:1.2}
+.sect .range{display:block;color:var(--muted);font-size:.85rem;margin-top:.25rem}
+.sect .tally{display:inline-block;margin-top:.6rem;font-size:.75rem;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
+.sectgap{height:2.6rem}
 
 /* event card -- rarity drives the whole outline and the chip.
    A uniform border, deliberately: an earlier version used a heavy 4px tab on
@@ -228,13 +238,40 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
             days.append((key, []))
         days[-1][1].append((rec, rk))
 
-    body = []
     week_end = today + timedelta(days=6)
-    split_done = False
+
+    def _is_later(key) -> bool:
+        return bool(key and key > week_end)
+
+    n_week = sum(len(i) for k, i in days if not _is_later(k))
+    n_later = sum(len(i) for k, i in days if _is_later(k))
+    horizon = today + timedelta(days=30)
+
+    def _section(title: str, rng: str, tally: str, first: bool) -> str:
+        gap = "" if first else '<div class="sectgap"></div>'
+        return (f'{gap}<div class="sect{" first" if first else ""}"><h2>{_esc(title)}</h2>'
+                f'<span class="range">{_esc(rng)}</span>'
+                f'<span class="tally">{_esc(tally)}</span></div>')
+
+    body = []
+    opened_week = opened_later = False
     for key, items in days:
-        if key and key > week_end and not split_done:
-            body.append('<div class="divider">— later this month —</div>')
-            split_done = True
+        later = _is_later(key)
+        if later and not opened_later:
+            body.append(_section(
+                "Later this month",
+                f"{(week_end + timedelta(days=1)).strftime('%b %-d')} – "
+                f"{horizon.strftime('%b %-d')} · worth registering for now",
+                f"{n_later} event{'s' if n_later != 1 else ''}",
+                first=not opened_week))
+            opened_later = True
+        elif not later and not opened_week:
+            body.append(_section(
+                "This week",
+                f"{today.strftime('%a %b %-d')} – {week_end.strftime('%a %b %-d')}",
+                f"{n_week} event{'s' if n_week != 1 else ''}",
+                first=True))
+            opened_week = True
         if key is None:
             heading, rel = "Date TBA", ""
         else:
