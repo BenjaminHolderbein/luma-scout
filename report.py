@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import rarity
+from sources import common as geo
 
 PT = ZoneInfo("America/Los_Angeles")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -239,6 +240,10 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .tag{background:var(--chip);border-radius:5px;padding:.08rem .4rem;font-size:.73rem}
 .new{background:var(--accent);color:#fff;border-radius:5px;padding:.08rem .4rem;
   font-size:.7rem;font-weight:700}
+/* not-SF warning chip -- deliberately loud. Everything in the report is
+   implicitly "in SF" except these, so the exception must not whisper. */
+.geo{background:#b3641a;color:#fff;border-radius:5px;padding:.08rem .45rem;
+  font-size:.73rem;font-weight:800;letter-spacing:.01em}
 .empty{color:var(--muted);font-size:.9rem;font-style:italic;
   border:1px dashed var(--line);border-radius:12px;padding:1rem;text-align:center}
 footer{margin-top:3rem;padding-top:1.1rem;border-top:1px solid var(--line);
@@ -305,6 +310,19 @@ def _tags_of(rk: dict) -> list[str]:
     return list(dict.fromkeys(t for t in tags if t))
 
 
+def _near_label(rec: dict) -> str:
+    """Name the actual town for a not-SF event. 'Wider Bay Area' flattens a
+    real gradient -- Oakland is 20 BART minutes, Santa Clara is an hour-plus --
+    so show the specific place whenever the record names one."""
+    blob = " ".join(f for f in (rec.get("city_state"), rec.get("address")) if f).lower()
+    for term in geo.NEAR_BAY_TERMS:
+        town = term.split(",")[0]
+        if town in ("bay area", "silicon valley") or town not in blob:
+            continue
+        return town.title()
+    return "Wider Bay Area"
+
+
 def _card(rec: dict, rk: dict, now: datetime) -> str:
     rar = rarity.of(rk.get("tier"), rk.get("score"))
     color = rarity.COLOR[rar]
@@ -318,7 +336,7 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
     if where:
         bits.append(f"<span>{_esc(where[:52])}</span>")
     if rec.get("sf_proximity") == "near":
-        bits.append('<span class="tag">Wider Bay Area</span>')
+        bits.append(f'<span class="geo">📍 {_esc(_near_label(rec))}</span>')
     price = rec.get("price_display")
     if price:
         bits.append(f'<span class="tag">{_esc(price)}</span>')
