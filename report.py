@@ -97,6 +97,16 @@ def _when(rec: dict, now: datetime) -> tuple[str, str]:
     label = dt.strftime("%a %b %-d, %-I:%M %p").replace(":00 ", " ")
     if rec.get("source") == "devpost":  # a submission window, not a start time
         label = dt.strftime("%a %b %-d")
+        end_iso = rec.get("end_at")
+        if end_iso and dt.date() <= now.astimezone(PT).date():
+            # already open -- what matters is how long is left to enter
+            try:
+                end = datetime.fromisoformat(end_iso.replace("Z", "+00:00")).astimezone(PT)
+                left = (end.date() - now.astimezone(PT).date()).days
+                return f"Open now · closes {end.strftime('%b %-d')}", (
+                    f"{left} days left" if left > 0 else "closes today")
+            except ValueError:
+                pass
     days = (dt.date() - now.astimezone(PT).date()).days
     rel = ("Today" if days == 0 else "Tomorrow" if days == 1
            else f"in {days} days" if 1 < days <= 30 else "")

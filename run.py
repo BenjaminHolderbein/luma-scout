@@ -131,9 +131,13 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
 
     for rk in to_show:  # only mark seen after a successful push
         r = by_id[rk["event_id"]]
+        # Prune by whichever end of the event is later: a Devpost submission
+        # window can start months before it closes, and pruning on the start
+        # would forget a still-open hackathon and re-badge it NEW every week.
+        dates = [d for d in (r.get("start_at"), r.get("end_at")) if d]
         seen.setdefault(rk["event_id"], {
             "first_notified": now.isoformat(),
-            "event_date": r.get("start_at"),
+            "event_date": max(dates) if dates else None,
             "tier": rk.get("tier"),
         })
     log(f"Pushed teaser ({len(to_show)} events in the report).")

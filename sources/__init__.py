@@ -46,9 +46,14 @@ def _in_window(rec: dict, now, window_days: int, hack_window_days: int) -> bool:
         # Devpost sometimes gives an unparseable period. Keep hackathons (a
         # missed hackathon is the failure mode Ben cares about), drop the rest.
         return looks_like_hackathon(rec)
+    is_hack = looks_like_hackathon(rec)
     if start < now - timedelta(hours=6):
-        return False
-    days = hack_window_days if looks_like_hackathon(rec) else window_days
+        # Devpost publishes a submission *period*, so a hackathon that opened in
+        # April and closes in September has a start date in the past while still
+        # being open to join. Judge those on the end date instead.
+        end = common.parse_dt(rec.get("end_at"))
+        return bool(is_hack and end and end >= now)
+    days = hack_window_days if is_hack else window_days
     return start <= now + timedelta(days=days)
 
 
