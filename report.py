@@ -474,7 +474,8 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
 def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = None,
           extra_count: int = 0, min_rarity: str = "uncommon",
           hack_window_days: int = 60, ntfy_topic: str | None = None,
-          ntfy_server: str = "https://ntfy.sh") -> str:
+          ntfy_server: str = "https://ntfy.sh",
+          report_url: str = "https://benjaminholderbein.github.io/luma-scout/") -> str:
     """pairs = [(record, ranked), ...] in any order; this sorts chronologically."""
     now_pt = now.astimezone(PT)
     today = now_pt.date()
@@ -661,9 +662,29 @@ read or post to it. This one only ever carries event headlines.</p>
         f"{SOURCE_LABEL.get(n, n)} {s.get('count', 0)}"
         for n, s in sorted((status or {}).items()) if not n.startswith("_"))
 
+    # Link-preview metadata (iMessage/Slack/Twitter read Open Graph). The
+    # description carries this week's actual drop counts; the image is the
+    # static branded card at docs/og.png.
+    base = report_url.rstrip("/") + "/"
+    top_counts = ", ".join(f"{counts[n]} {n}" for n in reversed(rarity.ORDER)
+                           if counts.get(n))
+    og_desc = (f"{len(ordered)} events this week — {top_counts}. "
+               "Hackathons, big free events, and free food in San Francisco, "
+               "fresh every Monday.")
+
     return f"""<title>SF events · week of {now_pt.strftime('%b %-d, %Y')}</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<meta name="description" content="{_esc(og_desc)}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="luma-scout">
+<meta property="og:title" content="Your week in SF · {now_pt.strftime('%b %-d')}">
+<meta property="og:description" content="{_esc(og_desc)}">
+<meta property="og:url" content="{_esc(base)}">
+<meta property="og:image" content="{_esc(base)}og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <style>{CSS}</style>
 <div class="wrap">
 <header>
