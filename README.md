@@ -1,9 +1,9 @@
 # luma-scout
 
 A weekly scout for San Francisco events. Every Monday morning it sweeps Luma,
-Devpost, Eventbrite and Meetup, ranks what it finds against a personal priority
-profile using Claude, publishes an HTML report to GitHub Pages, and pushes a
-teaser to my phone via [ntfy](https://ntfy.sh).
+Devpost, Y Combinator, Eventbrite and Meetup, ranks what it finds against a
+personal priority profile using Claude, publishes an HTML report to GitHub
+Pages, and pushes a teaser to my phone via [ntfy](https://ntfy.sh).
 
 **Report:** <https://benjaminholderbein.github.io/luma-scout/>
 
@@ -26,7 +26,7 @@ excluded outright — the one rule that overrides even tier 1.
 ## What it does
 
 ```
-collect (luma discover + luma calendar crawl + devpost + eventbrite + meetup)
+collect (luma discover + luma calendar crawl + devpost + yc + eventbrite + meetup)
   → window/geo filter → cross-source dedup → rank with Claude against preferences.md
   → render docs/index.html → push ntfy teaser → commit seen.json + docs
 ```
@@ -46,6 +46,7 @@ collect (luma discover + luma calendar crawl + devpost + eventbrite + meetup)
 | Luma discover | public discover API | SF-curated, ~69 events |
 | Luma calendars | `/calendar/get-items` per calendar found in the feed | the big win — ~300 events; Luma's search API needs auth |
 | Devpost | public JSON API | hackathons only; publishes a submission period, not a start time |
+| Y Combinator | Inertia.js `data-page` JSON on ycombinator.com/events | tags events `hackathon` explicitly; YC hackathons are often not on Luma |
 | Eventbrite | schema.org JSON-LD in search HTML | scraper; rate-limits aggressively, so requests are throttled |
 | Meetup | schema.org JSON-LD in `/find/` HTML | scraper |
 

@@ -15,7 +15,7 @@ from __future__ import annotations
 import re
 from datetime import timedelta
 
-from . import common, devpost, eventbrite, luma_src, meetup
+from . import common, devpost, eventbrite, luma_src, meetup, yc
 
 HACKATHON_HINT = re.compile(
     r"\b(hack ?a ?thon|hackaton|buildathon|build[- ]?a[- ]?thon|hack night|"
@@ -97,7 +97,8 @@ def collect(now, window_days: int, hack_window_days: int, log=lambda _m: None,
         status["luma"] = {"ok": False, "count": 0, "error": str(e)[:300]}
 
     # --- the rest: cheap, already-complete records ---
-    for name, mod in (("devpost", devpost), ("eventbrite", eventbrite), ("meetup", meetup)):
+    for name, mod in (("devpost", devpost), ("yc", yc),
+                      ("eventbrite", eventbrite), ("meetup", meetup)):
         try:
             recs = mod.collect(log)
             records += recs

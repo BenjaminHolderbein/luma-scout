@@ -24,7 +24,7 @@ UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
 
 # Richest data first. When the same event shows up on two platforms, the record
 # from the higher-priority source wins and the others land in `also_on`.
-SOURCE_PRIORITY = ["luma", "devpost", "eventbrite", "meetup"]
+SOURCE_PRIORITY = ["yc", "luma", "devpost", "eventbrite", "meetup"]
 
 
 # Minimum seconds between requests to the same host. Eventbrite starts serving
@@ -34,6 +34,7 @@ HOST_DELAY = {
     "www.eventbrite.com": 2.5,
     "www.meetup.com": 2.0,
     "devpost.com": 1.0,
+    "www.ycombinator.com": 1.0,
     "api.luma.com": 0.15,
 }
 DEFAULT_DELAY = 0.5

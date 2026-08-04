@@ -20,7 +20,7 @@ TIERS = [
     ("bigfree", "⭐", "Big & free", "Large events you can walk into for nothing"),
     ("food", "🍕", "Free food & drink", "Your week of free meals"),
 ]
-SOURCE_LABEL = {"luma": "Luma", "devpost": "Devpost",
+SOURCE_LABEL = {"luma": "Luma", "devpost": "Devpost", "yc": "Y Combinator",
                 "eventbrite": "Eventbrite", "meetup": "Meetup"}
 URGENCY = {
     "filling": ("⚡", "Filling up"),
