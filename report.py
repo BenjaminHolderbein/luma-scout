@@ -42,9 +42,23 @@ FILTER_JS = """
   var bar=document.getElementById('filters');
   if(!bar) return;
   bar.hidden=false;
+  var GROUPS=['tier','rarity','source'];
   var btns=[].slice.call(bar.querySelectorAll('.fbtn'));
   var cards=[].slice.call(document.querySelectorAll('.card'));
   var none=document.getElementById('noresults');
+  var active={tier:'all',rarity:'all',source:'all'};
+
+  // A card survives only if it satisfies every group at once. `ignore` lets the
+  // facet counts ask "how many would this chip give me?" without counting its
+  // own group against itself.
+  function matches(card, state, ignore){
+    for(var i=0;i<GROUPS.length;i++){
+      var g=GROUPS[i];
+      if(g===ignore) continue;
+      if(state[g]!=='all' && card.getAttribute('data-'+g)!==state[g]) return false;
+    }
+    return true;
+  }
 
   function visibleAfter(el, stopSel){
     var n=0, cur=el.nextElementSibling;
@@ -55,10 +69,9 @@ FILTER_JS = """
     return n;
   }
 
-  function apply(tier){
-    cards.forEach(function(c){
-      c.hidden = (tier!=='all' && c.getAttribute('data-tier')!==tier);
-    });
+  function apply(){
+    cards.forEach(function(c){ c.hidden = !matches(c, active); });
+
     [].slice.call(document.querySelectorAll('.day')).forEach(function(d){
       d.hidden = visibleAfter(d, '.day,.sect,.sectgap') === 0;
     });
@@ -70,22 +83,30 @@ FILTER_JS = """
     });
     var zone=document.querySelector('.zone');
     if(zone) zone.hidden = zone.querySelectorAll('.card:not([hidden])').length===0;
-    var total=document.querySelectorAll('.card:not([hidden])').length;
-    if(none) none.hidden = total>0;
+    if(none) none.hidden = document.querySelectorAll('.card:not([hidden])').length>0;
+
+    // Live facet counts: each chip shows what it would actually yield given the
+    // other groups, and dead ends disable themselves instead of lying.
     btns.forEach(function(b){
-      b.setAttribute('aria-pressed', String(b.getAttribute('data-tier')===tier));
+      var g=b.getAttribute('data-group'), v=b.getAttribute('data-val');
+      var probe={}; GROUPS.forEach(function(k){ probe[k]=active[k]; }); probe[g]=v;
+      var n=0;
+      cards.forEach(function(c){ if(matches(c, probe)) n++; });
+      var el=b.querySelector('.n');
+      if(el) el.textContent=n;
+      b.disabled = (n===0 && v!=='all');
+      b.setAttribute('aria-pressed', String(active[g]===v));
     });
   }
 
-  var active='all';
   btns.forEach(function(b){
     b.addEventListener('click', function(){
-      var t=b.getAttribute('data-tier');
-      active = (t===active && t!=='all') ? 'all' : t;
-      apply(active);
+      var g=b.getAttribute('data-group'), v=b.getAttribute('data-val');
+      active[g] = (v===active[g] && v!=='all') ? 'all' : v;
+      apply();
     });
   });
-  apply('all');
+  apply();
 })();
 """
 
@@ -125,17 +146,23 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   background:var(--chip);border-radius:999px;padding:.2rem .6rem;white-space:nowrap}
 .dot{width:.6rem;height:.6rem;border-radius:50%;flex:none}
 
-/* tier filter -- revealed by script, so it never sits there dead without JS */
-.filters{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.85rem}
+/* filters -- revealed by script, so they never sit there dead without JS.
+   The rarity row doubles as the legend it replaced: same counts, now clickable. */
+.filters{margin-top:1rem}
 .filters[hidden]{display:none}
-.fbtn{font:inherit;font-size:.82rem;font-weight:600;color:var(--ink);cursor:pointer;
+.frow{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin-top:.45rem}
+.flab{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);width:100%;margin-bottom:.05rem}
+.fbtn{font:inherit;font-size:.8rem;font-weight:600;color:var(--ink);cursor:pointer;
   background:var(--card);border:1.5px solid var(--line);border-radius:999px;
-  padding:.32rem .75rem;display:flex;align-items:center;gap:.32rem;
+  padding:.28rem .68rem;display:flex;align-items:center;gap:.3rem;
   -webkit-tap-highlight-color:transparent}
 .fbtn .n{color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.fbtn .dot{width:.55rem;height:.55rem}
 .fbtn[aria-pressed=true]{border-color:var(--fc,var(--accent));
   background:color-mix(in srgb, var(--fc,var(--accent)) 12%, transparent)}
 .fbtn[aria-pressed=true] .n{color:var(--fc,var(--accent))}
+.fbtn:disabled{opacity:.38;cursor:default}
 .noresults{color:var(--muted);font-size:.9rem;font-style:italic;
   border:1px dashed var(--line);border-radius:12px;padding:1.2rem;text-align:center;
   margin-top:1.2rem}
@@ -288,7 +315,8 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
 
     name = rec.get("name") or "Event"
     hook = rk.get("hook") or ""
-    parts = [f'<div class="card rar-{rar}" data-tier="{_esc(tier)}" style="--rar:{color}">',
+    parts = [f'<div class="card rar-{rar}" data-tier="{_esc(tier)}" data-rarity="{rar}" '
+             f'data-source="{_esc(rec.get("source"))}" style="--rar:{color}">',
              '<div class="top">',
              f'<span class="time">{_esc(_time_label(rec))}</span>',
              f'<span class="rar">{_esc(rar)}</span>',
@@ -384,26 +412,39 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
     for rec, rk in ordered:
         counts[rarity.of(rk.get("tier"), rk.get("score"))] = \
             counts.get(rarity.of(rk.get("tier"), rk.get("score")), 0) + 1
-    legend = "".join(
-        f'<span class="lg"><span class="dot" style="background:{rarity.COLOR[n]}"></span>'
-        f'{counts.get(n, 0)} {n}</span>'
-        for n in reversed(rarity.ORDER) if counts.get(n))
-
     tier_counts: dict[str, int] = {}
-    for _, rk in ordered:
-        t = rk.get("tier")
-        tier_counts[t] = tier_counts.get(t, 0) + 1
-    chips = [f'<button class="fbtn" type="button" data-tier="all" aria-pressed="true">'
-             f'All <span class="n">{len(ordered)}</span></button>']
-    for key, _, _ in [("hackathon", 0, 0), ("bigfree", 0, 0), ("food", 0, 0)]:
-        n = tier_counts.get(key, 0)
-        if not n:
-            continue
-        chips.append(
-            f'<button class="fbtn" type="button" data-tier="{key}" aria-pressed="false" '
-            f'style="--fc:{ACCENT_BY_TIER[key]}">{TIER_EMOJI[key]} {_esc(TIER_WORD[key])} '
-            f'<span class="n">{n}</span></button>')
-    filters = f'<div class="filters" id="filters" hidden>{"".join(chips)}</div>'
+    source_counts: dict[str, int] = {}
+    for rec, rk in ordered:
+        tier_counts[rk.get("tier")] = tier_counts.get(rk.get("tier"), 0) + 1
+        source_counts[rec.get("source")] = source_counts.get(rec.get("source"), 0) + 1
+
+    def _chip(group: str, val: str, label: str, n: int, fc: str | None = None,
+              dot: str | None = None) -> str:
+        style = f' style="--fc:{fc}"' if fc else ""
+        swatch = f'<span class="dot" style="background:{dot}"></span>' if dot else ""
+        return (f'<button class="fbtn" type="button" data-group="{group}" data-val="{val}"'
+                f' aria-pressed="{"true" if val == "all" else "false"}"{style}>'
+                f'{swatch}{label} <span class="n">{n}</span></button>')
+
+    rows = []
+    # Category
+    cat = [_chip("tier", "all", "All", len(ordered))]
+    cat += [_chip("tier", k, f"{TIER_EMOJI[k]} {_esc(TIER_WORD[k])}", tier_counts[k],
+                  ACCENT_BY_TIER[k])
+            for k in ("hackathon", "bigfree", "food") if tier_counts.get(k)]
+    rows.append('<div class="frow"><span class="flab">Category</span>' + "".join(cat) + "</div>")
+    # Rarity -- this row replaces the old static legend
+    rar = [_chip("rarity", "all", "All", len(ordered))]
+    rar += [_chip("rarity", n, n.capitalize(), counts[n], rarity.COLOR[n], rarity.COLOR[n])
+            for n in reversed(rarity.ORDER) if counts.get(n)]
+    rows.append('<div class="frow"><span class="flab">Rarity</span>' + "".join(rar) + "</div>")
+    # Source
+    src = [_chip("source", "all", "All", len(ordered))]
+    src += [_chip("source", s, _esc(SOURCE_LABEL.get(s, s)), n)
+            for s, n in sorted(source_counts.items(), key=lambda kv: -kv[1]) if s]
+    rows.append('<div class="frow"><span class="flab">Source</span>' + "".join(src) + "</div>")
+
+    filters = f'<div class="filters" id="filters" hidden>{"".join(rows)}</div>'
 
     blocked, degraded = [], []
     for n, s in (status or {}).items():
@@ -440,7 +481,6 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
   <h1>Your week in SF</h1>
   <p class="sub">{now_pt.strftime('%A, %B %-d')} onward · hackathons through
      {(now_pt + timedelta(days=30)).strftime('%B %-d')}</p>
-  <div class="legend">{legend}</div>
   {filters}
 </header>
 {warn}
