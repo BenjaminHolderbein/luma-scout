@@ -147,7 +147,8 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
 
     html_text = report_mod.build(pairs, now, status=status, extra_count=extra,
                                  min_rarity=min_rarity,
-                                 hack_window_days=int(env.get("HACKATHON_WINDOW_DAYS", "60")))
+                                 hack_window_days=int(env.get("HACKATHON_WINDOW_DAYS", "60")),
+                                 ntfy_topic=topic, ntfy_server=server)
     index, archive = report_mod.write(html_text, now)
     log(f"Wrote {os.path.relpath(index, HERE)} and {os.path.relpath(archive, HERE)}")
 

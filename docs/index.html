@@ -58,6 +58,24 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   border:1px dashed var(--line);border-radius:12px;padding:1.2rem;text-align:center;
   margin-top:1.2rem}
 
+/* subscribe explainer -- a chip that unfolds into the how-to */
+.subscribe{margin-top:.9rem}
+.subscribe summary{display:inline-flex;align-items:center;gap:.3rem;cursor:pointer;
+  font-size:.8rem;font-weight:600;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--line);border-radius:999px;padding:.28rem .7rem;
+  list-style:none;-webkit-tap-highlight-color:transparent;user-select:none}
+.subscribe summary::-webkit-details-marker{display:none}
+.subscribe[open] summary{border-color:var(--accent);color:var(--accent)}
+.subbody{border:1px solid var(--line);border-radius:12px;background:var(--card);
+  padding:.9rem 1rem;margin-top:.5rem;font-size:.88rem}
+.subbody p{margin:.2rem 0 .6rem}
+.subbody ol{margin:.2rem 0 .6rem;padding-left:1.3rem}
+.subbody li{margin-bottom:.35rem}
+.subbody a{color:var(--accent)}
+.subbody code{background:var(--chip);border-radius:5px;padding:.06rem .4rem;
+  font-size:.85em}
+.subbody .fine{color:var(--muted);font-size:.78rem;margin-bottom:0}
+
 /* day heading */
 .day{display:flex;align-items:baseline;gap:.5rem;margin:1.9rem 0 .7rem}
 .day h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
@@ -170,6 +188,26 @@ footer a{color:var(--muted)}
   <h1>Your week in SF</h1>
   <p class="sub">Monday, August 3 onward · hackathons through
      October 2</p>
+  
+<details class="subscribe">
+<summary>🔔 Get this as a push every Monday</summary>
+<div class="subbody">
+<p>A new report is generated every Monday around 7am PT, and a teaser with the
+week's top drops goes out over <a href="https://ntfy.sh" target="_blank"
+rel="noopener">ntfy</a> — a free push service, no account needed.</p>
+<ol>
+<li>Install the ntfy app
+    (<a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank" rel="noopener">iOS</a> ·
+     <a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener">Android</a>),
+    or use the <a href="https://ntfy.sh/bgh-luma" target="_blank" rel="noopener">web app</a>.</li>
+<li>Subscribe to the topic <code>bgh-luma</code>
+    (on the default server, ntfy.sh).</li>
+<li>Done — tap the Monday notification and it opens the latest report.</li>
+</ol>
+<p class="fine">ntfy topics are open by design: anyone who knows the name can
+read or post to it. This one only ever carries event headlines.</p>
+</div>
+</details>
   <div class="filters" id="filters" hidden><div class="frow"><span class="flab">Category</span><button class="fbtn" type="button" data-group="tier" data-val="all" aria-pressed="true">All <span class="n">43</span></button><button class="fbtn" type="button" data-group="tier" data-val="hackathon" aria-pressed="false" style="--fc:#c2691a">🛠️ Hackathon <span class="n">21</span></button><button class="fbtn" type="button" data-group="tier" data-val="bigfree" aria-pressed="false" style="--fc:#8a4fd0">⭐ Big &amp; free <span class="n">9</span></button><button class="fbtn" type="button" data-group="tier" data-val="food" aria-pressed="false" style="--fc:#2f8f4e">🍕 Free food <span class="n">25</span></button></div><div class="frow"><span class="flab">Rarity</span><button class="fbtn" type="button" data-group="rarity" data-val="all" aria-pressed="true">All <span class="n">43</span></button><button class="fbtn" type="button" data-group="rarity" data-val="legendary" aria-pressed="false" style="--fc:#f0a02a"><span class="dot" style="background:#f0a02a"></span>Legendary <span class="n">2</span></button><button class="fbtn" type="button" data-group="rarity" data-val="epic" aria-pressed="false" style="--fc:#a44dd6"><span class="dot" style="background:#a44dd6"></span>Epic <span class="n">15</span></button><button class="fbtn" type="button" data-group="rarity" data-val="rare" aria-pressed="false" style="--fc:#2f9fe8"><span class="dot" style="background:#2f9fe8"></span>Rare <span class="n">13</span></button><button class="fbtn" type="button" data-group="rarity" data-val="uncommon" aria-pressed="false" style="--fc:#3fb950"><span class="dot" style="background:#3fb950"></span>Uncommon <span class="n">12</span></button><button class="fbtn" type="button" data-group="rarity" data-val="common" aria-pressed="false" style="--fc:#8b949e"><span class="dot" style="background:#8b949e"></span>Common <span class="n">1</span></button></div><div class="frow"><span class="flab">Source</span><button class="fbtn" type="button" data-group="source" data-val="all" aria-pressed="true">All <span class="n">43</span></button><button class="fbtn" type="button" data-group="source" data-val="luma" aria-pressed="false">Luma <span class="n">38</span></button><button class="fbtn" type="button" data-group="source" data-val="hackclub" aria-pressed="false">Hack Club <span class="n">2</span></button><button class="fbtn" type="button" data-group="source" data-val="cerebralvalley" aria-pressed="false">Cerebral Valley <span class="n">1</span></button><button class="fbtn" type="button" data-group="source" data-val="devpost" aria-pressed="false">Devpost <span class="n">1</span></button><button class="fbtn" type="button" data-group="source" data-val="yc" aria-pressed="false">Y Combinator <span class="n">1</span></button></div><div class="frow"><span class="flab">New</span><button class="fbtn" type="button" data-group="new" data-val="all" aria-pressed="true">All <span class="n">43</span></button><button class="fbtn" type="button" data-group="new" data-val="yes" aria-pressed="false" style="--fc:#b4451f">NEW this week <span class="n">16</span></button></div></div>
 </header>
 
@@ -178,7 +216,7 @@ footer a{color:var(--muted)}
 
 <footer>
   Built by luma-scout for Benjamin Holderbein ·
-  generated Mon Aug 3, 9:51 PM PT<br>
+  generated Mon Aug 3, 9:59 PM PT<br>
   Sources: Cerebral Valley 27, Devpost 1, Eventbrite 27, Hack Club 2, Luma 72, Meetup 18, Y Combinator 1 ·
   <a href="https://github.com/BenjaminHolderbein/luma-scout">source</a>
 </footer>

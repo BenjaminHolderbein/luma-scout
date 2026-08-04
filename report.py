@@ -189,6 +189,24 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   border:1px dashed var(--line);border-radius:12px;padding:1.2rem;text-align:center;
   margin-top:1.2rem}
 
+/* subscribe explainer -- a chip that unfolds into the how-to */
+.subscribe{margin-top:.9rem}
+.subscribe summary{display:inline-flex;align-items:center;gap:.3rem;cursor:pointer;
+  font-size:.8rem;font-weight:600;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--line);border-radius:999px;padding:.28rem .7rem;
+  list-style:none;-webkit-tap-highlight-color:transparent;user-select:none}
+.subscribe summary::-webkit-details-marker{display:none}
+.subscribe[open] summary{border-color:var(--accent);color:var(--accent)}
+.subbody{border:1px solid var(--line);border-radius:12px;background:var(--card);
+  padding:.9rem 1rem;margin-top:.5rem;font-size:.88rem}
+.subbody p{margin:.2rem 0 .6rem}
+.subbody ol{margin:.2rem 0 .6rem;padding-left:1.3rem}
+.subbody li{margin-bottom:.35rem}
+.subbody a{color:var(--accent)}
+.subbody code{background:var(--chip);border-radius:5px;padding:.06rem .4rem;
+  font-size:.85em}
+.subbody .fine{color:var(--muted);font-size:.78rem;margin-bottom:0}
+
 /* day heading */
 .day{display:flex;align-items:baseline;gap:.5rem;margin:1.9rem 0 .7rem}
 .day h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
@@ -422,7 +440,8 @@ def _card(rec: dict, rk: dict, now: datetime) -> str:
 
 def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = None,
           extra_count: int = 0, min_rarity: str = "uncommon",
-          hack_window_days: int = 60) -> str:
+          hack_window_days: int = 60, ntfy_topic: str | None = None,
+          ntfy_server: str = "https://ntfy.sh") -> str:
     """pairs = [(record, ranked), ...] in any order; this sorts chronologically."""
     now_pt = now.astimezone(PT)
     today = now_pt.date()
@@ -541,6 +560,34 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
 
     filters = f'<div class="filters" id="filters" hidden>{"".join(rows)}</div>'
 
+    # Subscribe explainer -- only rendered when a topic is configured. The
+    # topic string is deliberately public-by-choice: it appears in the built
+    # page, never in the source.
+    subscribe = ""
+    if ntfy_topic:
+        host = ntfy_server.replace("https://", "").replace("http://", "").rstrip("/")
+        web_url = f"{ntfy_server.rstrip('/')}/{ntfy_topic}"
+        subscribe = f"""
+<details class="subscribe">
+<summary>🔔 Get this as a push every Monday</summary>
+<div class="subbody">
+<p>A new report is generated every Monday around 7am PT, and a teaser with the
+week's top drops goes out over <a href="https://ntfy.sh" target="_blank"
+rel="noopener">ntfy</a> — a free push service, no account needed.</p>
+<ol>
+<li>Install the ntfy app
+    (<a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank" rel="noopener">iOS</a> ·
+     <a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener">Android</a>),
+    or use the <a href="{_esc(web_url)}" target="_blank" rel="noopener">web app</a>.</li>
+<li>Subscribe to the topic <code>{_esc(ntfy_topic)}</code>
+    (on the default server, {_esc(host)}).</li>
+<li>Done — tap the Monday notification and it opens the latest report.</li>
+</ol>
+<p class="fine">ntfy topics are open by design: anyone who knows the name can
+read or post to it. This one only ever carries event headlines.</p>
+</div>
+</details>"""
+
     blocked, degraded = [], []
     for n, s in (status or {}).items():
         if n.startswith("_"):
@@ -589,6 +636,7 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
   <h1>Your week in SF</h1>
   <p class="sub">{now_pt.strftime('%A, %B %-d')} onward · hackathons through
      {(now_pt + timedelta(days=hack_window_days)).strftime('%B %-d')}</p>
+  {subscribe}
   {filters}
 </header>
 {warn}
