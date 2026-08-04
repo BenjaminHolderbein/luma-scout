@@ -104,6 +104,10 @@ def collect(now, window_days: int, hack_window_days: int, log=lambda _m: None,
             status[name] = {"ok": True, "count": len(recs)}
             if not recs:
                 status[name]["degraded"] = "returned no events (markup may have changed)"
+        except common.EgressBlocked as e:
+            log(f"  {name}: BLOCKED - {e}")
+            status[name] = {"ok": False, "count": 0, "blocked": True,
+                            "error": str(e)[:300]}
         except Exception as e:  # noqa: BLE001 - never let one scraper kill the run
             log(f"  {name}: FAILED - {e}")
             status[name] = {"ok": False, "count": 0, "error": str(e)[:300]}

@@ -43,13 +43,19 @@ def _event_id(url: str | None) -> str:
 def collect(log=lambda _m: None) -> list[dict]:
     out: dict[str, dict] = {}
     ok_queries = 0
+    fetched = 0
+    last_error: Exception | None = None
     for keywords in QUERIES:
         q = urllib.parse.urlencode({
             "keywords": keywords, "location": LOCATION, "source": "EVENTS",
         })
         try:
             page_html = common.http_get(f"{BASE}?{q}").decode("utf-8", "ignore")
-        except Exception:  # noqa: BLE001
+            fetched += 1
+        except common.EgressBlocked:
+            raise  # a policy block is not a dead query; surface it at once
+        except Exception as e:  # noqa: BLE001
+            last_error = e
             continue
         found = 0
         for ev in common.iter_jsonld_events(page_html):
@@ -89,6 +95,10 @@ def collect(log=lambda _m: None) -> list[dict]:
             )
         if found:
             ok_queries += 1
+
+    if fetched == 0:
+        raise RuntimeError(
+            f"all {len(QUERIES)} Meetup requests failed; last error: {last_error}")
 
     log(f"  meetup: {ok_queries}/{len(QUERIES)} queries returned -> {len(out)} SF events")
     return list(out.values())

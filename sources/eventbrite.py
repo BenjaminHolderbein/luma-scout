@@ -43,12 +43,18 @@ def _slug_id(url: str | None) -> str:
 def collect(log=lambda _m: None) -> list[dict]:
     out: dict[str, dict] = {}
     pages = 0
+    attempted = 0
+    last_error: Exception | None = None
     for slug in QUERIES:
         for page in range(1, PAGES_PER_QUERY + 1):
             url = BASE.format(q=slug) + (f"?page={page}" if page > 1 else "")
+            attempted += 1
             try:
                 page_html = common.http_get(url).decode("utf-8", "ignore")
-            except Exception:  # noqa: BLE001 - one dead query shouldn't kill the source
+            except common.EgressBlocked:
+                raise  # a policy block is not a dead query; surface it at once
+            except Exception as e:  # noqa: BLE001 - one dead query shouldn't kill the source
+                last_error = e
                 continue
             pages += 1
             found = 0
@@ -87,6 +93,13 @@ def collect(log=lambda _m: None) -> list[dict]:
                 )
             if found == 0:
                 break  # no more result pages for this query
+
+    if pages == 0 and attempted:
+        # Every request failed. Returning [] here would be indistinguishable
+        # from "Eventbrite has no SF events this week", which is how a total
+        # outage once hid behind a clean-looking report.
+        raise RuntimeError(
+            f"all {attempted} Eventbrite requests failed; last error: {last_error}")
 
     log(f"  eventbrite: {pages} pages -> {len(out)} SF events")
     return list(out.values())

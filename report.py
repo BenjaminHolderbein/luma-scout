@@ -175,13 +175,25 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
         else:
             body.append('<div class="empty">Nothing this week.</div>')
 
+    blocked, degraded = [], []
+    for n, s in (status or {}).items():
+        if n.startswith("_"):
+            continue
+        if s.get("blocked"):
+            blocked.append(n)
+        elif not s.get("ok") or s.get("degraded"):
+            degraded.append(n)
     warn = ""
-    degraded = [n for n, s in (status or {}).items()
-                if not n.startswith("_") and (not s.get("ok") or s.get("degraded"))]
+    if blocked:
+        warn += ('<div class="warn"><strong>Sources blocked.</strong> '
+                 + _esc(", ".join(blocked)) + ' could not be reached — the run '
+                 'environment\'s egress policy refused the connection. Add '
+                 'these domains to the environment\'s allowed list to restore '
+                 'coverage.</div>')
     if degraded:
-        warn = ('<div class="warn"><strong>Partial data.</strong> These sources returned '
-                'nothing this run, so coverage may be incomplete: '
-                + _esc(", ".join(degraded)) + ".</div>")
+        warn += ('<div class="warn"><strong>Partial data.</strong> These sources returned '
+                 'nothing this run, so coverage may be incomplete: '
+                 + _esc(", ".join(degraded)) + ".</div>")
 
     extra = (f'<p class="sub" style="margin-top:1.5rem">+{extra_count} more qualifying events '
              f'not shown (report cap).</p>' if extra_count > 0 else "")

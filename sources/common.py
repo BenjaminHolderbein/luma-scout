@@ -48,6 +48,22 @@ def _throttle(host: str) -> None:
     _last_hit[host] = time.monotonic()
 
 
+class EgressBlocked(RuntimeError):
+    """The sandbox's egress proxy refused to open a tunnel to this host.
+
+    Cloud routines run behind a policy-enforcing proxy that answers 403 to
+    CONNECT for hosts outside the environment's allowlist. That is a network
+    policy decision, not a transient error and not something headers or retries
+    can fix -- so fail fast and loudly instead of burning the retry budget and
+    reporting an empty result that looks like 'no events found'.
+    """
+
+
+def _is_egress_block(err: Exception) -> bool:
+    text = str(err)
+    return "Tunnel connection failed" in text or "CONNECT tunnel failed" in text
+
+
 def http_get(url: str, *, headers: dict | None = None, tries: int = 3,
              timeout: int = 30) -> bytes:
     """GET with a browser UA, per-host throttling, and backoff."""
@@ -63,6 +79,10 @@ def http_get(url: str, *, headers: dict | None = None, tries: int = 3,
                 return r.read()
         except Exception as e:  # noqa: BLE001 - network flakiness, retry
             last = e
+            if _is_egress_block(e):
+                raise EgressBlocked(
+                    f"egress proxy refused a tunnel to {host} (403 on CONNECT). "
+                    f"Add {host} to this environment's allowed domains.") from e
             if isinstance(e, urllib.error.HTTPError):
                 if e.code in (400, 404):
                     break  # not transient
