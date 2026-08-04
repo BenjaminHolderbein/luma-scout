@@ -35,19 +35,19 @@ CSS = """
 *{box-sizing:border-box}
 :root{
   --bg:#fbfaf8; --card:#fff; --ink:#17150f; --muted:#6b6559; --line:#e6e1d7;
-  --accent:#b4451f; --chip:#f2ede3; --zone:#f4f1ea;
+  --accent:#b4451f; --chip:#f2ede3; --zone:#f8f6f1;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#14130f; --card:#1c1b16; --ink:#f0ece3; --muted:#9d968a; --line:#2e2c25;
-  --accent:#ff9d6e; --chip:#26241d; --zone:#1a1914;
+  --accent:#ff9d6e; --chip:#26241d; --zone:#201e17;
 }}
 :root[data-theme=dark]{
   --bg:#14130f; --card:#1c1b16; --ink:#f0ece3; --muted:#9d968a; --line:#2e2c25;
-  --accent:#ff9d6e; --chip:#26241d; --zone:#1a1914;
+  --accent:#ff9d6e; --chip:#26241d; --zone:#201e17;
 }
 :root[data-theme=light]{
   --bg:#fbfaf8; --card:#fff; --ink:#17150f; --muted:#6b6559; --line:#e6e1d7;
-  --accent:#b4451f; --chip:#f2ede3; --zone:#f4f1ea;
+  --accent:#b4451f; --chip:#f2ede3; --zone:#f8f6f1;
 }
 body{margin:0;background:var(--bg);color:var(--ink);
   font:16px/1.5 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
