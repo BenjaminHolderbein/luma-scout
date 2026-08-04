@@ -242,7 +242,7 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   font-size:.7rem;font-weight:700}
 /* not-SF warning chip -- deliberately loud. Everything in the report is
    implicitly "in SF" except these, so the exception must not whisper. */
-.geo{background:#b3641a;color:#fff;border-radius:5px;padding:.08rem .45rem;
+.geo{background:#e5231b;color:#fff;border-radius:5px;padding:.08rem .45rem;
   font-size:.73rem;font-weight:800;letter-spacing:.01em}
 .empty{color:var(--muted);font-size:.9rem;font-style:italic;
   border:1px dashed var(--line);border-radius:12px;padding:1rem;text-align:center}
