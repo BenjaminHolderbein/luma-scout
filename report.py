@@ -73,6 +73,33 @@ FILTER_JS = """
     if(d) d.removeAttribute('open');
   });
 
+  // The page is generated on Monday but read all week: recompute each day's
+  // relative label against the viewer's clock, and dim days that have passed.
+  // Server-baked labels stay as the no-JS fallback.
+  (function(){
+    var now=new Date();
+    var today=new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    [].slice.call(document.querySelectorAll('.day[data-date]')).forEach(function(d){
+      var iso=d.getAttribute('data-date');
+      if(!iso) return;
+      var p=iso.split('-');
+      var day=new Date(+p[0], p[1]-1, +p[2]);
+      var delta=Math.round((day-today)/864e5);
+      var rel=d.querySelector('.rel');
+      if(rel) rel.textContent = delta===0?'Today' : delta===1?'Tomorrow'
+                              : delta>1?('in '+delta+' days')
+                              : delta===-1?'yesterday':'past';
+      if(delta<0){
+        d.classList.add('past');
+        var cur=d.nextElementSibling;
+        while(cur && !cur.matches('.day,.sect,.sectgap')){
+          if(cur.classList.contains('card')) cur.classList.add('past');
+          cur=cur.nextElementSibling;
+        }
+      }
+    });
+  })();
+
   var bar=document.getElementById('filters');
   if(!bar) return;
   bar.hidden=false;
@@ -242,6 +269,11 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 
 /* day heading */
 .day{display:flex;align-items:baseline;gap:.5rem;margin:2.15rem 0 .85rem}
+/* days that have already happened (marked client-side against the viewer's
+   clock): kept as a record, but clearly receded */
+.day.past h2,.day.past .rel{color:var(--muted);opacity:.7}
+.card.past{opacity:.45;filter:saturate(.35)}
+.card.past.rar-legendary,.card.past.rar-legendary::before{animation:none;box-shadow:none}
 .day h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
 .day .rel{color:var(--muted);font-size:.8rem}
 .day::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -531,13 +563,14 @@ def build(pairs: list[tuple[dict, dict]], now: datetime, status: dict | None = N
                 first=True))
             opened_week = True
         if key is None:
-            heading, rel = "Date TBA", ""
+            heading, rel, iso = "Date TBA", "", ""
         else:
             delta = (key - today).days
             heading = key.strftime("%A, %b %-d")
             rel = ("Today" if delta == 0 else "Tomorrow" if delta == 1
                    else f"in {delta} days" if delta > 1 else "")
-        body.append(f'<div class="day"><h2>{_esc(heading)}</h2>'
+            iso = key.isoformat()
+        body.append(f'<div class="day" data-date="{iso}"><h2>{_esc(heading)}</h2>'
                     f'<span class="rel">{_esc(rel)}</span></div>')
         body.extend(_card(rec, rk, now) for rec, rk in items)
 
