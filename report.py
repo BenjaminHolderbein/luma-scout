@@ -98,6 +98,30 @@ FILTER_JS = """
         }
       }
     });
+
+    // past days collapse by default behind a small toggle
+    var pastDays=[].slice.call(document.querySelectorAll('.day.past'));
+    if(pastDays.length){
+      var pastEls=[];
+      pastDays.forEach(function(d){
+        pastEls.push(d);
+        var c=d.nextElementSibling;
+        while(c && !c.matches('.day,.sect,.sectgap')){pastEls.push(c);c=c.nextElementSibling;}
+      });
+      var nCards=pastEls.filter(function(e){return e.classList.contains('card')}).length;
+      var hidden=true;
+      var btn=document.createElement('button');
+      btn.type='button'; btn.className='pastbtn';
+      function paint(){
+        pastEls.forEach(function(e){e.classList.toggle('pasthide', hidden)});
+        btn.textContent = hidden
+          ? 'Show past · '+nCards+' event'+(nCards===1?'':'s')
+          : 'Hide past';
+      }
+      btn.addEventListener('click', function(){hidden=!hidden; paint();});
+      pastDays[0].parentNode.insertBefore(btn, pastDays[0]);
+      paint();
+    }
   })();
 
   var bar=document.getElementById('filters');
@@ -274,6 +298,12 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .day.past h2,.day.past .rel{color:var(--muted);opacity:.7}
 .card.past{opacity:.45;filter:saturate(.35)}
 .card.past.rar-legendary,.card.past.rar-legendary::before{animation:none;box-shadow:none}
+.pasthide{display:none!important}
+.pastbtn{font:inherit;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;
+  background:none;border:1.5px dashed var(--line);border-radius:999px;
+  padding:.26rem .7rem;margin:1.4rem 0 0;display:inline-flex;
+  -webkit-tap-highlight-color:transparent}
+.pastbtn:hover{color:var(--ink);border-color:var(--muted)}
 .day h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
 .day .rel{color:var(--muted);font-size:.8rem}
 .day::after{content:"";flex:1;height:1px;background:var(--line)}
