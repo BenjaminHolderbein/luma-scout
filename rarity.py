@@ -23,9 +23,11 @@ having a scale at all.
 These numbers are calibrated against a real week of rankings, not guessed. The
 model scores hackathons high (65-95) and food moderate (35-75), so an earlier
 version with large tier bases and a small score weight made a THIRD of the
-report legendary, which drains the colour of any meaning. Letting the score
-dominate and demanding 90+ for legendary gives a proper pyramid: about
-3 legendary, 10 epic, 7 rare, 11 uncommon out of ~31 events.
+report legendary, which drains the colour of any meaning. Recalibrated
+2026-08-05 against the nine-source crawl (Ben wanted rare and uncommon
+scarcer and common doing real work): floors cut at the week's natural gaps,
+giving roughly 2 legendary, 15 epic, 6 rare, 10 uncommon, 10 common out of
+~43 shown.
 
 If the model's calibration drifts and legendary starts showing up everywhere
 again, retune the two constants below -- nothing else needs to change.
@@ -46,8 +48,8 @@ SCORE_WEIGHT = 0.75
 LADDER = [
     ("legendary", 90, "#f0a02a", "Drop everything"),
     ("epic",      78, "#a44dd6", "Really worth it"),
-    ("rare",      55, "#2f9fe8", "Solid pick"),
-    ("uncommon",  30, "#3fb950", "Decent option"),
+    ("rare",      69, "#2f9fe8", "Solid pick"),
+    ("uncommon",  50, "#3fb950", "Decent option"),
     ("common",    18, "#8b949e", "Filler"),
     ("junk",       0, "#5f5a52", "Skip it"),
 ]

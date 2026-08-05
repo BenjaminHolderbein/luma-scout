@@ -31,11 +31,11 @@ grouping, so one scan down the timeline tells you what is worth your evening:
 
 | | | |
 |---|---|---|
-| 🟠 **Legendary** | drop everything | ~3 a week |
-| 🟣 **Epic** | really worth it | ~10 |
-| 🔵 **Rare** | solid pick | ~7 |
-| 🟢 **Uncommon** | decent option | ~11 |
-| ⚪ **Common** | filler | shown in gray, visually receded |
+| 🟠 **Legendary** | drop everything | ~2-3 a week |
+| 🟣 **Epic** | really worth it | ~15 |
+| 🔵 **Rare** | solid pick | ~6 |
+| 🟢 **Uncommon** | decent option | ~10 |
+| ⚪ **Common** | filler | ~10, shown in gray, visually receded |
 | 🩶 **Junk** | skip it | hidden by default |
 
 Rarity combines the tier (a floor: a weak hackathon still outranks a weak
