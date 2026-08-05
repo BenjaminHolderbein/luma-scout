@@ -348,7 +348,9 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
   border-radius:10px;padding:.8rem .9rem;margin-bottom:.8rem;position:relative}
 /* the whole card is the tap target: the title anchor stretches an invisible
    overlay across it (so no JS and middle-click/long-press still work) */
-.card a.title::after{content:"";position:absolute;inset:0}
+/* z-index matters: .summary's opacity<1 spawns a stacking context that would
+   otherwise paint over the overlay and swallow clicks on its text */
+.card a.title::after{content:"";position:absolute;inset:0;z-index:1}
 .card:hover{border-color:color-mix(in srgb, var(--rar) 100%, transparent)}
 .card:hover a.title{color:var(--rar)}
 @keyframes cardflash{from{background:var(--rar)}to{background:var(--card)}}
