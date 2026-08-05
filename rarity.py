@@ -24,10 +24,10 @@ These numbers are calibrated against a real week of rankings, not guessed. The
 model scores hackathons high (65-95) and food moderate (35-75), so an earlier
 version with large tier bases and a small score weight made a THIRD of the
 report legendary, which drains the colour of any meaning. Recalibrated
-2026-08-05 against the nine-source crawl (Ben wanted rare and uncommon
-scarcer and common doing real work): floors cut at the week's natural gaps,
-giving roughly 2 legendary, 15 epic, 6 rare, 10 uncommon, 10 common out of
-~43 shown.
+2026-08-05 against the nine-source crawl (Ben wanted epic, rare and uncommon
+all scarcer and common doing real work): floors cut at the week's natural
+gaps, giving a true pyramid of roughly 2 legendary, 8 epic, 10 rare,
+13 uncommon, 10 common out of ~43 shown.
 
 If the model's calibration drifts and legendary starts showing up everywhere
 again, retune the two constants below -- nothing else needs to change.
@@ -47,8 +47,8 @@ SCORE_WEIGHT = 0.75
 # one overloaded bottom tier.
 LADDER = [
     ("legendary", 90, "#f0a02a", "Drop everything"),
-    ("epic",      78, "#a44dd6", "Really worth it"),
-    ("rare",      69, "#2f9fe8", "Solid pick"),
+    ("epic",      84, "#a44dd6", "Really worth it"),
+    ("rare",      74, "#2f9fe8", "Solid pick"),
     ("uncommon",  50, "#3fb950", "Decent option"),
     ("common",    18, "#8b949e", "Filler"),
     ("junk",       0, "#5f5a52", "Skip it"),
