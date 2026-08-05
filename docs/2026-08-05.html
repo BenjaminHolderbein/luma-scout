@@ -113,9 +113,12 @@ h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
 .pasthide{display:none!important}
 .pastbtn{font:inherit;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;
   background:none;border:1.5px dashed var(--line);border-radius:999px;
-  padding:.26rem .7rem;margin:1.4rem 0 0;display:inline-flex;
+  padding:.26rem .7rem;margin:.55rem 0 0;display:inline-flex;
   -webkit-tap-highlight-color:transparent}
 .pastbtn:hover{color:var(--ink);border-color:var(--muted)}
+/* the day heading right after the toggle drops its usual big top margin --
+   otherwise the button's gap and the day gap stack */
+.day.aftertoggle{margin-top:.9rem}
 .day h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
 .day .rel{color:var(--muted);font-size:.8rem}
 .day::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -257,7 +260,7 @@ read or post to it. This one only ever carries event headlines.</p>
 
 <footer>
   Built by luma-scout for Benjamin Holderbein ·
-  generated Wed Aug 5, 10:33 AM PT<br>
+  generated Wed Aug 5, 10:35 AM PT<br>
   Sources: Cerebral Valley 27, Devpost 1, Eventbrite 27, Hack Club 2, Luma 72, Meetup 18, Y Combinator 1 ·
   <a href="https://github.com/BenjaminHolderbein/luma-scout">source</a>
 </footer>
@@ -339,6 +342,13 @@ read or post to it. This one only ever carries event headlines.</p>
         btn.textContent = hidden
           ? 'Show past · '+nCards+' event'+(nCards===1?'':'s')
           : 'Hide past';
+        // whichever day is first visible after the toggle loses its big top
+        // margin, so the button's gap and the day gap don't stack
+        [].slice.call(document.querySelectorAll('.aftertoggle'))
+          .forEach(function(e){e.classList.remove('aftertoggle')});
+        var nxt=btn.nextElementSibling;
+        while(nxt && nxt.classList.contains('pasthide')) nxt=nxt.nextElementSibling;
+        if(nxt && nxt.classList.contains('day')) nxt.classList.add('aftertoggle');
       }
       btn.addEventListener('click', function(){hidden=!hidden; paint();});
       pastDays[0].parentNode.insertBefore(btn, pastDays[0]);
