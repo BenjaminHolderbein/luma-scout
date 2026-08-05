@@ -25,6 +25,10 @@ it looks small, unpolished, off-topic, paid, or unappealing. If it is a
 hackathon in or near SF, it goes in the report. Score it low if it's weak — but
 list it. A missed hackathon is the single worst failure this report can have.
 
+**Paid hackathons score at most 35.** They are still listed, but paying to
+enter caps how excited Ben can be — a paid hackathon is never more than a
+"decent option" (the code enforces this cap too).
+
 Hackathons run on a 60-day horizon (the rest of the report is 7 days) because
 they need registration lead time. Include them every week until they happen.
 

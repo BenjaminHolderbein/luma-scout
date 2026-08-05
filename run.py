@@ -95,6 +95,22 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
     selected = [rk for rk in ranked
                 if rk.get("tier") not in DROP_TIERS and rk.get("event_id") in by_id]
 
+    # Ben's rule: a hackathon you have to PAY for is at most 'uncommon'. It
+    # still gets listed (coverage stays exhaustive), but its score is capped in
+    # code so the rarity arithmetic can never light it up -- the ranker is told
+    # the same thing, but this is the guarantee. Unknown pricing is not "paid":
+    # only an explicit non-free price triggers the cap.
+    paid_cap = rarity.max_score_within("hackathon", "uncommon")
+    for rk in selected:
+        if rk.get("tier") != "hackathon":
+            continue
+        r = by_id.get(rk.get("event_id")) or {}
+        price = (r.get("price_display") or "").lower()
+        if (not r.get("is_free")) and price and "free" not in price \
+                and (rk.get("score") or 0) > paid_cap:
+            log(f"  paid hackathon capped at uncommon: {r.get('name')!r} ({price})")
+            rk["score"] = paid_cap
+
     # The hackathon guarantee is enforced everywhere downstream of ranking
     # (long horizon, geo widening, cutoff exemption, cap exemption) -- but the
     # ranker itself omitting an event from its output would silently defeat all

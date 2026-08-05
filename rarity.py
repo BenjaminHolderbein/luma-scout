@@ -89,3 +89,10 @@ def is_protected(tier: str | None) -> bool:
 
 def meets(name: str, minimum: str) -> bool:
     return rank_index(name) >= rank_index(minimum)
+
+
+def max_score_within(tier: str, ceiling: str) -> int:
+    """Highest score that keeps `tier` at or below the `ceiling` rarity.
+    Derived from the ladder so it survives retuning."""
+    return max((s for s in range(101)
+                if rank_index(of(tier, s)) <= rank_index(ceiling)), default=0)
