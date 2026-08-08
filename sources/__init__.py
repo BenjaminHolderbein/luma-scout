@@ -15,7 +15,7 @@ from __future__ import annotations
 from datetime import timedelta
 
 from . import (agihouse, cerebralvalley, common, devpost, eventbrite, hackclub,
-               luma_src, meetup, mlh, yc)
+               luma_src, meetup, mlh, partiful, yc)
 
 
 def looks_like_hackathon(rec: dict) -> bool:
@@ -108,7 +108,8 @@ def collect(now, window_days: int, hack_window_days: int, log=lambda _m: None,
     # --- the rest: cheap, already-complete records ---
     for name, mod in (("devpost", devpost), ("yc", yc), ("agihouse", agihouse),
                       ("cerebralvalley", cerebralvalley), ("hackclub", hackclub),
-                      ("mlh", mlh), ("eventbrite", eventbrite), ("meetup", meetup)):
+                      ("mlh", mlh), ("eventbrite", eventbrite), ("meetup", meetup),
+                      ("partiful", partiful)):
         try:
             recs = mod.collect(log)
             records += recs

@@ -28,7 +28,7 @@ UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
 # underlying Luma event, so a Luma-native record should win the merge and CV
 # land in `also_on`.
 SOURCE_PRIORITY = ["yc", "luma", "agihouse", "devpost", "mlh", "hackclub",
-                   "cerebralvalley", "eventbrite", "meetup"]
+                   "cerebralvalley", "eventbrite", "meetup", "partiful"]
 
 
 # Minimum seconds between requests to the same host. Eventbrite starts serving
@@ -70,8 +70,10 @@ def _is_egress_block(err: Exception) -> bool:
 
 
 def http_get(url: str, *, headers: dict | None = None, tries: int = 3,
-             timeout: int = 30) -> bytes:
-    """GET with a browser UA, per-host throttling, and backoff."""
+             timeout: int = 30, data: bytes | None = None) -> bytes:
+    """GET (or POST, when `data` is given) with a browser UA, per-host
+    throttling, and backoff. POSTs here are read-only RPC calls (Partiful),
+    so the retry loop is as safe for them as for a GET."""
     hdrs = {"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"}
     hdrs.update(headers or {})
     host = urllib.parse.urlsplit(url).netloc
@@ -79,7 +81,7 @@ def http_get(url: str, *, headers: dict | None = None, tries: int = 3,
     for attempt in range(tries):
         _throttle(host)
         try:
-            req = urllib.request.Request(url, headers=hdrs)
+            req = urllib.request.Request(url, data=data, headers=hdrs)
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read()
         except Exception as e:  # noqa: BLE001 - network flakiness, retry

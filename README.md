@@ -1,7 +1,7 @@
 # luma-scout
 
 A weekly scout for San Francisco events. Every Monday morning it sweeps Luma,
-Devpost, Y Combinator, Eventbrite and Meetup, ranks what it finds against a
+Devpost, Y Combinator, Eventbrite, Meetup and Partiful, ranks what it finds against a
 personal priority profile using Claude, publishes an HTML report to GitHub
 Pages, and pushes a teaser to my phone via [ntfy](https://ntfy.sh).
 
@@ -56,7 +56,7 @@ hides.
 ## What it does
 
 ```
-collect (luma discover + luma calendar crawl + devpost + yc + eventbrite + meetup)
+collect (luma discover + luma calendar crawl + devpost + yc + eventbrite + meetup + partiful)
   → window/geo filter → cross-source dedup → rank with Claude against preferences.md
   → render docs/index.html → push ntfy teaser → commit seen.json + docs
 ```
@@ -95,6 +95,7 @@ collect (luma discover + luma calendar crawl + devpost + yc + eventbrite + meetu
 | MLH | JSON embedded in the season page | student flagships (Cal Hacks / SF Hacks class), announced months out |
 | Eventbrite | schema.org JSON-LD in search HTML | scraper; SF queries for all tiers + Bay-city queries for hackathons; rate-limits aggressively, so requests are throttled |
 | Meetup | schema.org JSON-LD in `/find/` HTML | scraper |
+| Partiful | anonymous Firebase callables on api.partiful.com | the public Discover feed + section carousels; street fairs, art walks, free-food pop-ups that list nowhere else — tiers 2-3 only, never hackathons. Feed pagination is login-gated, so we get the logged-out ceiling: ~50 curated events |
 
 ## Layout
 
