@@ -7,6 +7,8 @@ carry full UTF-8."""
 from __future__ import annotations
 
 import json
+import time
+import urllib.error
 import urllib.request
 import rarity
 from datetime import datetime
@@ -105,14 +107,40 @@ def publish_roundup(title: str, message: str, tags: list[str], topic: str,
     }
     if click:
         payload["click"] = click  # tapping the notification opens the report
-    req = urllib.request.Request(
-        server.rstrip("/") + "/",
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=30) as r:
-        r.read()
+    body = json.dumps(payload).encode("utf-8")
+
+    # Retried, because one unlucky POST used to lose the entire week. The whole
+    # pipeline -- ten sources, a 25-minute crawl, a ranked report -- funnels
+    # into this single request, and on 2026-08-10 it raised once and the run
+    # went silent with a perfectly good report already published. ntfy.sh
+    # rate-limits per client IP and a cloud sandbox shares its egress address
+    # with strangers, so a 429 here is somebody else's traffic, not ours.
+    # 4xx other than 429 is our own bug and retrying cannot fix it.
+    last = None
+    for attempt in range(4):
+        if attempt:
+            delay = min(2 ** attempt, 8)
+            if isinstance(last, urllib.error.HTTPError):
+                try:  # ntfy sends Retry-After on 429; prefer its number
+                    delay = max(delay, min(int(last.headers.get("Retry-After", 0)), 30))
+                except (TypeError, ValueError):
+                    pass
+            time.sleep(delay)
+        req = urllib.request.Request(
+            server.rstrip("/") + "/", data=body,
+            headers={"Content-Type": "application/json"}, method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                r.read()
+            return
+        except urllib.error.HTTPError as e:
+            last = e
+            if e.code != 429 and e.code < 500:
+                raise
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            last = e
+    raise last
 
 
 def send_failure(topic: str, server: str, error_text: str) -> None:
@@ -122,12 +150,13 @@ def send_failure(topic: str, server: str, error_text: str) -> None:
     itself dies there is no report -- and a missing Monday push is far too easy
     to not notice. Priority 4 so it stands out from the weekly roundup.
 
-    Blind spot, by construction: this goes out over the same host as the
-    roundup, so the one failure it cannot report is ntfy itself being
-    unreachable -- exactly what happened on 2026-08-10, when the sandbox's
-    egress policy refused ntfy.sh and the whole run went silent despite
-    publishing a good report. Anything that must survive that needs a second
-    channel; the weekly routine's own completion notification is the backstop."""
+    Blind spot, by construction: this needs NTFY_TOPIC and the ntfy host to
+    work, which is exactly what it is trying to report on. On 2026-08-10 the
+    run published a good report and went completely silent -- and whatever the
+    trigger, the switch could not fire, because a missing topic disables the
+    alarm and the alarm's own channel in one stroke. Anything that must survive
+    that needs a different channel; the weekly routine's own completion
+    notification (email + push, enabled 2026-08-10) is the real backstop."""
     publish_roundup(
         "⚠️ luma-scout run failed",
         f"{error_text}\n\nNo report this week until this is fixed — check the run logs.",

@@ -181,7 +181,19 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
         log("\nNothing qualifies; not pushing.")
         return 0
     if not topic:
-        log("NTFY_TOPIC not set; cannot push.")
+        # Not what went wrong on 2026-08-10 (the topic was set that day), but
+        # worth shouting about: NTFY_TOPIC is the ONLY setting without a
+        # default, so a run with no .env renders an almost identical report and
+        # then skips the push, and send_failure reads the same variable so it
+        # cannot announce that either. A quiet one-liner here was the wrong
+        # weight for the one variable whose absence is otherwise invisible.
+        log("\n" + "!" * 68)
+        log("NTFY_TOPIC NOT SET -- the report rendered, but NO notification")
+        log("was even attempted, and the failure notifier is equally dead.")
+        log("Every other setting has a default that matches .env, so this is")
+        log("the one variable whose absence is otherwise invisible. Set it in")
+        log("the environment's variables (survives a missing .env) or in .env.")
+        log("!" * 68)
         return 2
 
     priority = 4 if any(rk.get("tier") == "hackathon" or rk.get("urgency") == "filling"
@@ -200,10 +212,10 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
         log("PUSH FAILED -- the report rendered, but NO notification reached")
         log(f"the phone. Host: {server}")
         log(f"Error: {e}")
-        log("If this is a sandboxed run, the environment's egress policy is the")
-        log("likely cause: ntfy is not one of the ten source hosts and has to")
-        log("be allowed separately. seen.json is deliberately left unwritten,")
-        log("so next run re-badges these events NEW and retries the push.")
+        log("Every retry above was already exhausted, so this is not a blip.")
+        log("Report the error verbatim -- it is the only diagnostic that")
+        log("survives the run. seen.json is deliberately left unwritten, so")
+        log("next run re-badges these events NEW and retries the push.")
         log("!" * 68)
         return 1
 
