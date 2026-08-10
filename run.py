@@ -191,7 +191,20 @@ def deliver(records: list[dict], ranked: list[dict], env: dict, dry: bool,
         notify.publish_roundup(title, message, tags, topic, server,
                                priority=priority, click=report_url)
     except Exception as e:  # noqa: BLE001
-        log(f"push failed, not marking seen (will retry next run): {e}")
+        # Shouted rather than logged: this runs at the tail of ~25 minutes of
+        # crawler chatter, and a one-line failure here is the single thing a
+        # reader must not skim past. The report still publishes fine, so
+        # nothing else in the run looks wrong -- see notify.send_failure for
+        # why the dead-man's switch cannot cover this particular case.
+        log("\n" + "!" * 68)
+        log("PUSH FAILED -- the report rendered, but NO notification reached")
+        log(f"the phone. Host: {server}")
+        log(f"Error: {e}")
+        log("If this is a sandboxed run, the environment's egress policy is the")
+        log("likely cause: ntfy is not one of the ten source hosts and has to")
+        log("be allowed separately. seen.json is deliberately left unwritten,")
+        log("so next run re-badges these events NEW and retries the push.")
+        log("!" * 68)
         return 1
 
     for rk in to_show:  # only mark seen after a successful push

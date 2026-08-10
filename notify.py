@@ -120,7 +120,14 @@ def send_failure(topic: str, server: str, error_text: str) -> None:
 
     Per-source failures degrade gracefully into the report, but if the run
     itself dies there is no report -- and a missing Monday push is far too easy
-    to not notice. Priority 4 so it stands out from the weekly roundup."""
+    to not notice. Priority 4 so it stands out from the weekly roundup.
+
+    Blind spot, by construction: this goes out over the same host as the
+    roundup, so the one failure it cannot report is ntfy itself being
+    unreachable -- exactly what happened on 2026-08-10, when the sandbox's
+    egress policy refused ntfy.sh and the whole run went silent despite
+    publishing a good report. Anything that must survive that needs a second
+    channel; the weekly routine's own completion notification is the backstop."""
     publish_roundup(
         "⚠️ luma-scout run failed",
         f"{error_text}\n\nNo report this week until this is fixed — check the run logs.",
