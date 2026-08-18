@@ -40,7 +40,8 @@ def _short_when(rec: dict) -> str:
     iso = rec.get("start_at")
     if not iso:
         return rec.get("when_local", "")
-    dt = datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(PT)
+    dt = datetime.fromisoformat(iso.replace("Z", "+00:00"))
+    dt = dt.replace(tzinfo=PT) if dt.tzinfo is None else dt.astimezone(PT)
     return dt.strftime("%a %-I:%M%p").replace(":00", "").replace("AM", "am").replace("PM", "pm")
 
 

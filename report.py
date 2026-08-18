@@ -431,9 +431,12 @@ def _dt(iso: str | None) -> datetime | None:
     if not iso:
         return None
     try:
-        return datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(PT)
+        dt = datetime.fromisoformat(iso.replace("Z", "+00:00"))
     except ValueError:
         return None
+    # Naive values (Eventbrite date-only dates) are assumed Pacific, matching
+    # sources/common.parse_dt; astimezone() on a naive dt would use system tz.
+    return dt.replace(tzinfo=PT) if dt.tzinfo is None else dt.astimezone(PT)
 
 
 def _time_label(rec: dict) -> str:
