@@ -30,8 +30,14 @@ def prune(seen: dict, days_grace: int = 3) -> dict:
     for eid, rec in seen.items():
         ed = rec.get("event_date")
         try:
-            if ed and datetime.fromisoformat(ed.replace("Z", "+00:00")) >= cutoff:
-                out[eid] = rec
+            if ed:
+                dt = datetime.fromisoformat(ed.replace("Z", "+00:00"))
+                if dt.tzinfo is None:
+                    # Eventbrite sometimes gives date-only strings ("2026-08-21");
+                    # assume UTC so the comparison against the aware cutoff works.
+                    dt = dt.replace(tzinfo=timezone.utc)
+                if dt >= cutoff:
+                    out[eid] = rec
         except ValueError:
             out[eid] = rec  # keep anything unparseable rather than lose it
     return out
