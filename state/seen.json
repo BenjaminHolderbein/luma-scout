@@ -1,7 +1,12 @@
 {
- "agihouse-long-horizon-agents-build-day": {
-  "event_date": "2026-08-23T05:00:00.000Z",
-  "first_notified": "2026-08-17T14:14:39.051549+00:00",
+ "agihouse-coreweave-hacks-agent-loops-hackathon-with-weights": {
+  "event_date": "2026-09-14T00:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "hackathon"
+ },
+ "agihouse-the-living-internet-build-day": {
+  "event_date": "2026-09-20T05:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
  "cv-2bb5041d-8f72-457e-9e43-74cba1559872": {
@@ -14,9 +19,34 @@
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
  },
+ "cv-3098ea93-2247-4cac-8387-b7d86ac768e6": {
+  "event_date": "2026-09-28T00:00:00+00:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "hackathon"
+ },
+ "cv-3376296d-2fff-4ea2-90a7-5360cae53f22": {
+  "event_date": "2026-09-02T19:00:00+00:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
+ },
+ "cv-36a736e9-56a8-4ef2-ba5d-a8a1b99f63e7": {
+  "event_date": "2026-09-03T00:30:00+00:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
+ },
  "cv-42602377-c95f-42b0-bbe5-bd95937e7ce7": {
   "event_date": "2026-08-30T01:00:00+00:00",
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
+  "tier": "hackathon"
+ },
+ "cv-5ddaa41c-c31a-40b1-8d74-5110ed61ea2e": {
+  "event_date": "2026-09-04T03:30:00+00:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "bigfree"
+ },
+ "cv-694b0050-d96a-430f-b9ab-e386af154ef1": {
+  "event_date": "2026-09-20T04:00:00+00:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
  "cv-923fdd68-e8aa-4dbc-b741-5476d8fef42a": {
@@ -24,10 +54,20 @@
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
   "tier": "hackathon"
  },
- "cv-dc6e5a55-f179-4cd8-a845-a4adb79ff57d": {
-  "event_date": "2026-08-22T04:30:00+00:00",
-  "first_notified": "2026-08-17T14:14:39.051549+00:00",
+ "cv-a17de6f7-10db-4d57-8a0c-a1fb0be54caa": {
+  "event_date": "2026-09-27T00:00:00+00:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
+ },
+ "cv-adb1e1bc-88e6-4e6a-9f96-6aa3f4e6e210": {
+  "event_date": "2026-09-27T04:00:00+00:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "hackathon"
+ },
+ "cv-f1fbcb80-d112-48e5-ac80-9c4fef6511c3": {
+  "event_date": "2026-09-03T04:00:00+00:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
  },
  "devpost-26125": {
   "event_date": "2026-09-26T00:00:00-07:00",
@@ -49,6 +89,11 @@
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
  },
+ "devpost-31124": {
+  "event_date": "2026-10-18T00:00:00-07:00",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "hackathon"
+ },
  "eventbrite-1994480873984": {
   "event_date": "2026-09-26",
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
@@ -57,6 +102,11 @@
  "eventbrite-1996656041970": {
   "event_date": "2026-09-29",
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
+  "tier": "hackathon"
+ },
+ "eventbrite-1998999257591": {
+  "event_date": "2026-09-04",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
  "evt-09TBBbq6Na2HvPa": {
@@ -69,55 +119,30 @@
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
  },
- "evt-1groWegZMyBefz9": {
-  "event_date": "2026-08-27T03:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-1uJIpbDeiFuUVVV": {
-  "event_date": "2026-08-26T03:30:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-2dmSDnNb6ddWzYe": {
-  "event_date": "2026-08-26T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
+ "evt-2gUGEmn3LiCKbJ7": {
+  "event_date": "2026-09-21T02:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
- "evt-3nXbUb2KICWFbu3": {
-  "event_date": "2026-08-25T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
+ "evt-453PphhLspLh3BV": {
+  "event_date": "2026-09-11T03:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
- "evt-3z0VdRxDBTCa0P7": {
-  "event_date": "2026-08-27T03:30:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-4AV2RZUmmZb7DzG": {
-  "event_date": "2026-08-24T04:00:00.000Z",
-  "first_notified": "2026-08-04T03:00:49.123821+00:00",
+ "evt-6AkrCEGC0NajByg": {
+  "event_date": "2026-10-09T10:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
- "evt-4QGayJSj01k4x5j": {
-  "event_date": "2026-08-28T03:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
+ "evt-8QtTx6ng1ytrcla": {
+  "event_date": "2026-09-03T05:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
  },
- "evt-5HAZ5BKAHuQ1WqF": {
-  "event_date": "2026-08-27T03:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-6FYVTVIT9d2CZiH": {
-  "event_date": "2026-08-25T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-7HixftyHgdvIyql": {
-  "event_date": "2026-08-27T03:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
+ "evt-9G13qSATpaiBBSX": {
+  "event_date": "2026-09-13T04:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "hackathon"
  },
  "evt-9QPcAKCGLE3fdNt": {
   "event_date": "2026-08-29T02:00:00.000Z",
@@ -134,15 +159,10 @@
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
  },
- "evt-BHbJE593S3IKaqj": {
-  "event_date": "2026-08-26T03:30:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-BpVc7VsB5FvmZ6Q": {
-  "event_date": "2026-08-28T03:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
+ "evt-BKTA54jjlLAPc1m": {
+  "event_date": "2026-09-04T03:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
  },
  "evt-Csie42nVgi5Jeu3": {
   "event_date": "2026-09-19T04:00:00.000Z",
@@ -154,30 +174,15 @@
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
   "tier": "hackathon"
  },
- "evt-DECjFUNkamRSmH4": {
-  "event_date": "2026-08-23T04:00:00.000Z",
-  "first_notified": "2026-08-04T03:00:49.123821+00:00",
-  "tier": "hackathon"
+ "evt-DgqcTGziGp6q1Wl": {
+  "event_date": "2026-09-03T00:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "bigfree"
  },
  "evt-FCTQx6RPSAxTcMy": {
   "event_date": "2026-09-13T02:30:00.000Z",
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
- },
- "evt-FH6HxBSsvZGbAPi": {
-  "event_date": "2026-08-24T03:00:00.000Z",
-  "first_notified": "2026-08-04T03:00:49.123821+00:00",
-  "tier": "hackathon"
- },
- "evt-FKpvAcSzbdJ1fAV": {
-  "event_date": "2026-08-26T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-HzkaQUbT9iMzckG": {
-  "event_date": "2026-08-28T03:30:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
  },
  "evt-I75nWVKeV0VZ6xX": {
   "event_date": "2026-09-15T04:00:00.000Z",
@@ -194,15 +199,15 @@
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
  },
+ "evt-JSI5vqowL7EseYL": {
+  "event_date": "2026-09-02T04:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "bigfree"
+ },
  "evt-JfFNKjVtfaMZtL1": {
   "event_date": "2026-08-30T01:00:00.000Z",
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
- },
- "evt-K7ukCDlYXaAwdZf": {
-  "event_date": "2026-08-27T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
  },
  "evt-KoG613La396FbEw": {
   "event_date": "2026-09-27T05:00:00.000Z",
@@ -214,9 +219,14 @@
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
   "tier": "hackathon"
  },
- "evt-PgTd3KSAU4fgQq3": {
-  "event_date": "2026-08-28T02:30:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
+ "evt-NRWoIJ0rk2BEm8a": {
+  "event_date": "2026-09-04T04:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "hackathon"
+ },
+ "evt-QnqMwZyTXPZ0CQm": {
+  "event_date": "2026-09-04T04:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "bigfree"
  },
  "evt-SrMhI2BVlDvPP3u": {
@@ -229,19 +239,29 @@
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
   "tier": "bigfree"
  },
- "evt-UJDw7ABtinflhnD": {
-  "event_date": "2026-08-23T04:00:00.000Z",
-  "first_notified": "2026-08-17T14:14:39.051549+00:00",
+ "evt-VtcHyCPQKMXV2EM": {
+  "event_date": "2026-09-02T04:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
+ },
+ "evt-XnJpcLcMb7b9Mki": {
+  "event_date": "2026-09-04T19:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "bigfree"
+ },
+ "evt-ZWx2UoqeYPmdHoe": {
+  "event_date": "2026-09-02T04:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "bigfree"
+ },
+ "evt-afa3xj70abvI8qw": {
+  "event_date": "2026-09-01T04:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
- "evt-W9DLOLDa6bHxnCb": {
-  "event_date": "2026-08-22T23:30:00.000Z",
-  "first_notified": "2026-08-17T14:14:39.051549+00:00",
-  "tier": "hackathon"
- },
- "evt-YBplD1pQjkKDciZ": {
-  "event_date": "2026-08-23T00:00:00.000Z",
-  "first_notified": "2026-08-17T14:14:39.051549+00:00",
+ "evt-bSHlHyFbLpWkxET": {
+  "event_date": "2026-09-26T02:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
  "evt-eEcpeHUJan4TuFt": {
@@ -254,33 +274,33 @@
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
   "tier": "hackathon"
  },
- "evt-fgV5uJfMpaOcePu": {
-  "event_date": "2026-08-27T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
+ "evt-eKOLHjZY69JpsBv": {
+  "event_date": "2026-09-03T03:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
  },
- "evt-hgRMFPe6t5Bm0Yn": {
-  "event_date": "2026-08-28T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
+ "evt-exi7X2iA8wAsSVC": {
+  "event_date": "2026-10-10T05:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
- "evt-nHINkED4iCPZvzU": {
-  "event_date": "2026-08-27T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
+ "evt-fb6TFhVCa8Rf7FB": {
+  "event_date": "2026-09-04T04:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
+ },
+ "evt-hTjpoCLnbOfGA4U": {
+  "event_date": "2026-10-24T00:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "hackathon"
+ },
+ "evt-luepEjENQ7Vlhm5": {
+  "event_date": "2026-09-21T03:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
  "evt-op3v5Hwerp6jVjY": {
   "event_date": "2026-09-30T02:00:00.000Z",
-  "first_notified": "2026-08-17T14:14:39.051549+00:00",
-  "tier": "hackathon"
- },
- "evt-pH5od7w6LlWEV5L": {
-  "event_date": "2026-08-26T03:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-pRyDoncyFlIGVvC": {
-  "event_date": "2026-08-23T01:00:00.000Z",
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
  },
@@ -294,39 +314,24 @@
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
   "tier": "hackathon"
  },
- "evt-qk6GFaiAGMoVt0F": {
-  "event_date": "2026-08-23T00:00:00.000Z",
-  "first_notified": "2026-08-17T14:14:39.051549+00:00",
-  "tier": "hackathon"
- },
- "evt-rcC3hLh6TmOO7Rb": {
-  "event_date": "2026-08-26T03:30:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
- "evt-sFHY3K8fFpjcJhK": {
-  "event_date": "2026-08-25T04:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
- },
  "evt-sVz87LJ5H6PZMDo": {
   "event_date": "2026-09-14T02:00:00.000Z",
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
   "tier": "hackathon"
  },
- "evt-vG5lZObaMxFUXy2": {
-  "event_date": "2026-08-27T02:30:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
+ "evt-sqMS4wdKJZmvVtn": {
+  "event_date": "2026-09-05T03:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
  },
- "evt-xNmFd6yDrROzwj6": {
-  "event_date": "2026-08-26T03:30:00.000Z",
-  "first_notified": "2026-08-17T14:14:39.051549+00:00",
+ "evt-yVWzHFPzfijGXrq": {
+  "event_date": "2026-09-05T00:30:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
- "evt-xPF8eRZs2B5PAAP": {
-  "event_date": "2026-08-26T03:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
+ "evt-zJf0yZmjHicPH7V": {
+  "event_date": "2026-09-02T03:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "bigfree"
  },
  "evt-zgQZpqsgm1fFkwr": {
@@ -339,24 +344,29 @@
   "first_notified": "2026-08-17T14:14:39.051549+00:00",
   "tier": "hackathon"
  },
- "meetup-315930131": {
-  "event_date": "2026-08-25T02:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
+ "meetup-314997217": {
+  "event_date": "2026-09-16T02:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  },
- "meetup-316162699": {
-  "event_date": "2026-08-28T00:00:00.000Z",
-  "first_notified": "2026-08-24T14:15:54.937059+00:00",
-  "tier": "bigfree"
+ "meetup-315900034": {
+  "event_date": "2026-09-02T01:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "food"
+ },
+ "meetup-316014341": {
+  "event_date": "2026-09-01T02:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
+  "tier": "hackathon"
  },
  "meetup-316215778": {
   "event_date": "2026-08-29T20:00:00.000Z",
   "first_notified": "2026-08-24T14:15:54.937059+00:00",
   "tier": "hackathon"
  },
- "yc-3817": {
-  "event_date": "2026-08-23T10:00:00.000Z",
-  "first_notified": "2026-08-04T03:00:49.123821+00:00",
+ "yc-4378": {
+  "event_date": "2026-09-27T01:00:00.000Z",
+  "first_notified": "2026-08-31T14:20:25.632817+00:00",
   "tier": "hackathon"
  }
 }
