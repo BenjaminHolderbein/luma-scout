@@ -1,0 +1,434 @@
+<title>SF events · week of Oct 26, 2026</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="60 events this week — 4 epic, 7 rare, 33 uncommon, 16 common. Hackathons, big free events, and free food in San Francisco, fresh every Monday.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="luma-scout">
+<meta property="og:title" content="Your week in SF · Oct 26">
+<meta property="og:description" content="60 events this week — 4 epic, 7 rare, 33 uncommon, 16 common. Hackathons, big free events, and free food in San Francisco, fresh every Monday.">
+<meta property="og:url" content="https://benjaminholderbein.github.io/luma-scout/">
+<meta property="og:image" content="https://benjaminholderbein.github.io/luma-scout/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+*{box-sizing:border-box}
+/* the filter toggles the `hidden` attribute, and an author `display` rule beats
+   the UA stylesheet's [hidden]{display:none} -- .day is flex, so empty day
+   headings survived a filter until this landed */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbfaf8; --card:#fff; --ink:#17150f; --muted:#6b6559; --line:#e6e1d7;
+  --accent:#b4451f; --chip:#f2ede3; --zone:#f8f6f1;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#14130f; --card:#1c1b16; --ink:#f0ece3; --muted:#9d968a; --line:#2e2c25;
+  --accent:#ff9d6e; --chip:#26241d; --zone:#201e17;
+}}
+:root[data-theme=dark]{
+  --bg:#14130f; --card:#1c1b16; --ink:#f0ece3; --muted:#9d968a; --line:#2e2c25;
+  --accent:#ff9d6e; --chip:#26241d; --zone:#201e17;
+}
+:root[data-theme=light]{
+  --bg:#fbfaf8; --card:#fff; --ink:#17150f; --muted:#6b6559; --line:#e6e1d7;
+  --accent:#b4451f; --chip:#f2ede3; --zone:#f8f6f1;
+}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:44rem;margin:0 auto;padding:1.5rem 1rem 4rem}
+header{padding:.5rem 0 1.25rem;border-bottom:1px solid var(--line);margin-bottom:1.25rem}
+h1{margin:0 0 .3rem;font-size:1.6rem;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:.9rem;margin:0}
+
+/* rarity legend */
+.legend{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.9rem}
+.lg{display:flex;align-items:center;gap:.3rem;font-size:.76rem;color:var(--muted);
+  background:var(--chip);border-radius:999px;padding:.2rem .6rem;white-space:nowrap}
+.dot{width:.6rem;height:.6rem;border-radius:50%;flex:none}
+
+/* filters -- revealed by script, so they never sit there dead without JS.
+   The rarity row doubles as the legend it replaced: same counts, now clickable. */
+.filters{margin-top:1rem}
+.filters[hidden]{display:none}
+.frow{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin-top:.45rem}
+.flab{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);width:100%;margin-bottom:.05rem}
+.fbtn{font:inherit;font-size:.8rem;font-weight:600;color:var(--ink);cursor:pointer;
+  background:var(--card);border:1.5px solid var(--line);border-radius:999px;
+  padding:.28rem .68rem;display:flex;align-items:center;gap:.3rem;
+  -webkit-tap-highlight-color:transparent}
+.fbtn .n{color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.fbtn .dot{width:.55rem;height:.55rem}
+.fbtn[aria-pressed=true]{border-color:var(--fc,var(--accent));
+  background:color-mix(in srgb, var(--fc,var(--accent)) 12%, transparent)}
+.fbtn[aria-pressed=true] .n{color:var(--fc,var(--accent))}
+.fbtn:disabled{opacity:.38;cursor:default}
+.noresults{color:var(--muted);font-size:.9rem;font-style:italic;
+  border:1px dashed var(--line);border-radius:12px;padding:1.2rem;text-align:center;
+  margin-top:1.2rem}
+
+/* subscribe explainer -- a chip beside the title that unfolds into a
+   dropdown. The panel is absolutely positioned so opening it never
+   reflows the title row. */
+.titlerow{display:flex;align-items:center;justify-content:space-between;
+  gap:.45rem;flex-wrap:wrap}
+.titlerow h1{margin:0}
+.subscribe{position:relative;flex:none}
+.subscribe summary{display:inline-flex;align-items:center;gap:.3rem;cursor:pointer;
+  font-size:.8rem;font-weight:600;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--line);border-radius:999px;padding:.28rem .55rem;
+  list-style:none;-webkit-tap-highlight-color:transparent;user-select:none;
+  white-space:nowrap}
+.subscribe summary::-webkit-details-marker{display:none}
+.subscribe[open] summary{border-color:var(--accent);color:var(--accent)}
+/* open = modal: dimmed backdrop, panel centered on screen. Clicks anywhere
+   outside the panel close it (wired in script). */
+.subscribe[open]::before{content:"";position:fixed;inset:0;z-index:30;
+  background:rgba(12,10,6,.45)}
+.subbody{position:fixed;inset:0;margin:auto;z-index:31;height:fit-content;
+  width:min(24rem, calc(100vw - 2rem));
+  border:1px solid var(--line);border-radius:12px;background:var(--card);
+  padding:1rem 1.1rem;font-size:.88rem;
+  box-shadow:0 12px 40px -8px rgba(0,0,0,.4)}
+.subclose{position:absolute;top:.55rem;right:.6rem;font:inherit;font-size:.9rem;
+  line-height:1;color:var(--muted);background:none;border:0;cursor:pointer;
+  padding:.3rem;-webkit-tap-highlight-color:transparent}
+.subclose:hover{color:var(--ink)}
+.subbody p{margin:.2rem 0 .6rem;padding-right:1.4rem}
+.subbody ol{margin:.2rem 0 .6rem;padding-left:1.3rem}
+.subbody li{margin-bottom:.35rem}
+.subbody a{color:var(--accent)}
+.subbody code{background:var(--chip);border-radius:5px;padding:.06rem .4rem;
+  font-size:.85em}
+.subbody .fine{color:var(--muted);font-size:.78rem;margin-bottom:0}
+
+/* day heading */
+.day{display:flex;align-items:baseline;gap:.5rem;margin:2.15rem 0 .85rem}
+/* days that have already happened (marked client-side against the viewer's
+   clock): kept as a record, but clearly receded */
+.day.past h2,.day.past .rel{color:var(--muted);opacity:.7}
+.card.past{opacity:.45;filter:saturate(.35)}
+.card.past.rar-legendary,.card.past.rar-legendary::before{animation:none;box-shadow:none}
+.pasthide{display:none!important}
+.pastbtn{font:inherit;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;
+  background:none;border:1.5px dashed var(--line);border-radius:999px;
+  padding:.26rem .7rem;margin:.55rem 0 0;display:inline-flex;
+  -webkit-tap-highlight-color:transparent}
+.pastbtn:hover{color:var(--ink);border-color:var(--muted)}
+/* the day heading right after the toggle drops its usual big top margin --
+   otherwise the button's gap and the day gap stack */
+.day.aftertoggle{margin-top:.9rem}
+.day h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
+.day .rel{color:var(--muted);font-size:.8rem}
+.day::after{content:"";flex:1;height:1px;background:var(--line)}
+/* section break -- typographic, not another box. It used to be a filled panel
+   with a chunky accent bar, which competed with the cards and borrowed the
+   warning callout's visual language. The weight now comes from type size, a
+   rule, and whitespace; the tinted zone below marks the second half. */
+.sect{margin:.2rem 0 1.2rem;padding:0 0 .75rem;border-bottom:2px solid var(--line)}
+.sect .row{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem}
+.sect h2{margin:0;font-size:1.45rem;letter-spacing:-.025em;line-height:1.15}
+.sect .tally{color:var(--muted);font-size:.8rem;font-weight:600;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.sect .range{display:block;color:var(--muted);font-size:.85rem;margin-top:.3rem}
+.sect + .day{margin-top:1.2rem}
+.sectgap{height:2.6rem}
+
+/* everything beyond this week sits in its own tinted zone, so the two halves
+   of the report read as separate places rather than one continuous scroll */
+.zone{background:var(--zone);border:1px solid var(--line);border-radius:16px;
+  padding:1.5rem 1.15rem 1.7rem;margin-top:2.9rem}
+.zone .sectgap{display:none}
+.zone .sect{margin-top:0}
+.zone .day{margin-top:2rem}
+.zone .day h2{font-size:1rem}
+.zone .card{margin-bottom:.8rem}
+.zone .card:last-child{margin-bottom:0}
+
+/* event card -- rarity drives the whole outline and the chip.
+   A uniform border, deliberately: an earlier version used a heavy 4px tab on
+   the left only, which read as a lopsided edge next to the legendary glow. */
+.card{background:var(--card);border:1.5px solid var(--rar);
+  border-radius:10px;padding:.8rem .9rem;margin-bottom:.8rem;position:relative}
+/* the whole card is the tap target: the title anchor stretches an invisible
+   overlay across it (so no JS and middle-click/long-press still work) */
+/* z-index matters: .summary's opacity<1 spawns a stacking context that would
+   otherwise paint over the overlay and swallow clicks on its text */
+.card a.title::after{content:"";position:absolute;inset:0;z-index:1}
+.card:hover{border-color:color-mix(in srgb, var(--rar) 100%, transparent)}
+.card:hover a.title{color:var(--rar)}
+@keyframes cardflash{from{background:var(--rar)}to{background:var(--card)}}
+.card.flash{animation:cardflash .5s ease-out}
+/* the legendary glow breathes at rest: a second halo layered on the static
+   glow, oscillating its opacity -- cheap to composite and theme-agnostic */
+.card.rar-legendary::before{content:"";position:absolute;inset:0;border-radius:10px;
+  box-shadow:0 0 26px -2px rgba(240,160,42,.75);opacity:.15;
+  animation:legthrob 2.4s ease-in-out infinite alternate;pointer-events:none}
+@keyframes legthrob{from{opacity:.15}to{opacity:.85}}
+/* legendary gets extra sauce on click: a scale pop, a glow burst, and a
+   shine sweeping across the card. Unspecified properties ease back to the
+   card's resting legendary glow on their own. The shine borrows the same
+   ::before as the throb, so .flash is removed on animationend to hand the
+   pseudo-element back to the throb. */
+.card.rar-legendary.flash{animation:legflash .7s ease-out;overflow:hidden}
+@keyframes legflash{
+  0%{background:var(--rar)}
+  22%{transform:scale(1.03);box-shadow:0 0 38px 3px rgba(240,160,42,.95)}
+  100%{background:var(--card)}
+}
+.card.rar-legendary.flash::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);
+  transform:translateX(-130%);animation:legshine .7s ease-out;pointer-events:none}
+@keyframes legshine{to{transform:translateX(130%)}}
+/* legendary gets a glow -- the only rarity that earns extra attention on a
+   scan. Kept to ~2-3 cards a week by the ladder, so it stays special. The
+   border is already uniform, so the halo sits evenly around the whole card. */
+/* common is filler by definition -- shown, but visually receded so the scan
+   still lands on the colours that matter. junk only renders if the cutoff is
+   dropped below the default, and recedes further. */
+.card.rar-common{opacity:.72}
+.card.rar-junk{opacity:.55}
+.card.rar-legendary{box-shadow:0 0 17px -3px rgba(240,160,42,.55)}
+.card.rar-legendary .rar{box-shadow:0 0 10px -2px rgba(240,160,42,.9)}
+@media (prefers-color-scheme:dark){
+  .card.rar-legendary{box-shadow:0 0 24px -4px rgba(240,160,42,.8)}
+}
+:root[data-theme=dark] .card.rar-legendary{box-shadow:0 0 24px -4px rgba(240,160,42,.8)}
+:root[data-theme=light] .card.rar-legendary{box-shadow:0 0 17px -3px rgba(240,160,42,.55)}
+.card .top{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
+.time{font-variant-numeric:tabular-nums;font-weight:700;font-size:.86rem;color:var(--ink);
+  white-space:nowrap}
+.rar{background:var(--rar);color:#fff;border-radius:4px;padding:.08rem .4rem;
+  font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  white-space:nowrap}
+.card a.title{color:var(--ink);font-weight:650;text-decoration:none;font-size:1.02rem;
+  display:inline-block;line-height:1.35;margin-top:.3rem}
+.card a.title:hover{color:var(--rar)}
+.hook{color:var(--rar);font-size:.88rem;margin:.25rem 0 0;font-weight:600}
+.summary{font-size:.88rem;margin:.35rem 0 0;opacity:.85}
+.deadline{font-size:.83rem;margin:.4rem 0 0;font-weight:650;color:var(--accent)}
+.meta{display:flex;flex-wrap:wrap;gap:.3rem .5rem;margin-top:.5rem;
+  font-size:.78rem;color:var(--muted);align-items:center}
+.tag{background:var(--chip);border-radius:5px;padding:.08rem .4rem;font-size:.73rem}
+.new{background:var(--accent);color:#fff;border-radius:5px;padding:.08rem .4rem;
+  font-size:.7rem;font-weight:700}
+/* the location chip only turns loud -- red -- when the event is NOT in SF.
+   Everything here is implicitly "in SF" except those, so the exception must
+   not whisper. Same radius as the neighbouring tags, deliberately. */
+.loc{background:var(--chip);border-radius:5px;padding:.08rem .45rem;font-size:.73rem}
+.loc.offsf{background:#e5231b;color:#fff;font-weight:800;letter-spacing:.01em}
+.empty{color:var(--muted);font-size:.9rem;font-style:italic;
+  border:1px dashed var(--line);border-radius:12px;padding:1rem;text-align:center}
+footer{margin-top:3rem;padding-top:1.1rem;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.78rem}
+footer a{color:var(--muted)}
+.warn{background:var(--chip);border-left:3px solid var(--accent);border-radius:6px;
+  padding:.6rem .8rem;font-size:.82rem;margin-bottom:1.2rem}
+</style>
+<div class="wrap">
+<header>
+  <div class="titlerow">
+    <h1>Your week in SF</h1>
+    
+<details class="subscribe">
+<summary>Get the Monday push</summary>
+<div class="subbody">
+<button class="subclose" type="button" aria-label="Close">✕</button>
+<p>A new report is generated every Monday around 7am PT, and a teaser with the
+week's top drops goes out over <a href="https://ntfy.sh" target="_blank"
+rel="noopener">ntfy</a> — a free push service, no account needed.</p>
+<ol>
+<li>Install the ntfy app
+    (<a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank" rel="noopener">iOS</a> ·
+     <a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener">Android</a>),
+    or use the <a href="https://ntfy.sh/bgh-luma" target="_blank" rel="noopener">web app</a>.</li>
+<li>Subscribe to the topic <code>bgh-luma</code>
+    (on the default server, ntfy.sh).</li>
+<li>Done — tap the Monday notification and it opens the latest report.</li>
+</ol>
+<p class="fine">ntfy topics are open by design: anyone who knows the name can
+read or post to it. This one only ever carries event headlines.</p>
+</div>
+</details>
+  </div>
+  <p class="sub">Monday, October 26 onward · hackathons through
+     December 25</p>
+  <div class="filters" id="filters" hidden><div class="frow"><span class="flab">Category</span><button class="fbtn" type="button" data-group="tier" data-val="all" aria-pressed="true">All <span class="n">60</span></button><button class="fbtn" type="button" data-group="tier" data-val="hackathon" aria-pressed="false" style="--fc:#c2691a">🛠️ Hackathon <span class="n">44</span></button><button class="fbtn" type="button" data-group="tier" data-val="bigfree" aria-pressed="false" style="--fc:#8a4fd0">⭐ Big &amp; free <span class="n">7</span></button><button class="fbtn" type="button" data-group="tier" data-val="food" aria-pressed="false" style="--fc:#2f8f4e">🍕 Free food <span class="n">13</span></button></div><div class="frow"><span class="flab">Rarity</span><button class="fbtn" type="button" data-group="rarity" data-val="all" aria-pressed="true">All <span class="n">60</span></button><button class="fbtn" type="button" data-group="rarity" data-val="epic" aria-pressed="false" style="--fc:#a44dd6"><span class="dot" style="background:#a44dd6"></span>Epic <span class="n">4</span></button><button class="fbtn" type="button" data-group="rarity" data-val="rare" aria-pressed="false" style="--fc:#2f9fe8"><span class="dot" style="background:#2f9fe8"></span>Rare <span class="n">7</span></button><button class="fbtn" type="button" data-group="rarity" data-val="uncommon" aria-pressed="false" style="--fc:#3fb950"><span class="dot" style="background:#3fb950"></span>Uncommon <span class="n">33</span></button><button class="fbtn" type="button" data-group="rarity" data-val="common" aria-pressed="false" style="--fc:#8b949e"><span class="dot" style="background:#8b949e"></span>Common <span class="n">16</span></button></div><div class="frow"><span class="flab">Source</span><button class="fbtn" type="button" data-group="source" data-val="all" aria-pressed="true">All <span class="n">60</span></button><button class="fbtn" type="button" data-group="source" data-val="luma" aria-pressed="false">Luma <span class="n">38</span></button><button class="fbtn" type="button" data-group="source" data-val="cerebralvalley" aria-pressed="false">Cerebral Valley <span class="n">13</span></button><button class="fbtn" type="button" data-group="source" data-val="eventbrite" aria-pressed="false">Eventbrite <span class="n">3</span></button><button class="fbtn" type="button" data-group="source" data-val="devpost" aria-pressed="false">Devpost <span class="n">2</span></button><button class="fbtn" type="button" data-group="source" data-val="meetup" aria-pressed="false">Meetup <span class="n">1</span></button><button class="fbtn" type="button" data-group="source" data-val="yc" aria-pressed="false">Y Combinator <span class="n">1</span></button><button class="fbtn" type="button" data-group="source" data-val="agihouse" aria-pressed="false">AGI House <span class="n">1</span></button><button class="fbtn" type="button" data-group="source" data-val="hackclub" aria-pressed="false">Hack Club <span class="n">1</span></button></div><div class="frow"><span class="flab">New</span><button class="fbtn" type="button" data-group="new" data-val="all" aria-pressed="true">All <span class="n">60</span></button><button class="fbtn" type="button" data-group="new" data-val="yes" aria-pressed="false" style="--fc:#b4451f">NEW this week <span class="n">28</span></button></div></div>
+</header>
+
+<div class="sect"><div class="row"><h2>This week</h2><span class="tally">28 events</span></div><span class="range">Mon Oct 26 – Sun Nov 1</span></div><div class="day" data-date="2026-10-26"><h2>Monday, Oct 26</h2><span class="rel">Today</span></div><div class="card rar-uncommon" data-tier="food" data-rarity="uncommon" data-source="luma" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">6pm</span><span class="rar">uncommon</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/0qr6bxcw" target="_blank" rel="noopener">Are We Running Too Many Agents?</a><p class="hook">Free dinner + top speakers</p><p class="summary">Food and drinks sponsored by Sentry at an AI-agents talk with speakers from exe, DatologyAI and Sourcegraph&#x27;s founder; near-300 RSVPs and now waitlisted.</p><div class="meta"><span class="loc">Sentry</span><span class="tag">Free</span><span class="tag">⏳ Waitlist</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">6pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/3dm9k3jp" target="_blank" rel="noopener">INFERENCE: Dinner @ Wayfare 🍸</a><p class="hook">Intimate dinner, AI builder crowd</p><p class="summary">Inference&#x27;s small private dinner at Wayfare Tavern for people building with AI, nearly full.</p><div class="meta"><span class="loc">Wayfare Tavern</span><span class="tag">Free</span><span class="tag">⚡ Filling up</span><span class="tag">Luma</span><span class="new">NEW</span></div></div><div class="day" data-date="2026-10-27"><h2>Tuesday, Oct 27</h2><span class="rel">Tomorrow</span></div><div class="card rar-uncommon" data-tier="bigfree" data-rarity="uncommon" data-source="luma" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">5pm</span><span class="rar">uncommon</span><span class="tag">⭐ Big &amp; free</span></div><a class="title" href="https://luma.com/5ng6bniy" target="_blank" rel="noopener">San Francisco Syntax Meetup</a><p class="hook">550-person dev beer garden meetup</p><p class="summary">SF Syntax Meetup takes over Barebottle Beer Garden during GitHub Universe week with the Syntax FM crew; huge turnout (549 RSVPs), now waitlisted.</p><div class="meta"><span class="loc">Barebottle Beer Garden at Salesforce Park</span><span class="tag">Free</span><span class="tag">⏳ Waitlist</span><span class="tag">Luma</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">5pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/aivalley-lqjv" target="_blank" rel="noopener">Who Killed the Build? 💀 A Halloween DevTools Murder Mystery with Flox</a><p class="hook">Halloween devtools murder mystery + food</p><p class="summary">Flox&#x27;s interactive &quot;who killed the build&quot; devtools mystery, with Halloween food, drinks and networking bookending the investigation.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-uncommon" data-tier="bigfree food" data-rarity="uncommon" data-source="luma" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">5:30pm</span><span class="rar">uncommon</span><span class="tag">⭐ Big &amp; free</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/osts92ax" target="_blank" rel="noopener">SF Systems: The Future of Data</a><p class="hook">250-person data talks + free food</p><p class="summary">SF Systems Club talks on agent-era data systems at Recall&#x27;s SF office; food and drinks provided, 250 RSVPs, now waitlisted.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">⏳ Waitlist</span><span class="tag">Luma</span><span class="new">NEW</span></div></div><div class="card rar-uncommon" data-tier="bigfree" data-rarity="uncommon" data-source="luma" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">5:30pm</span><span class="rar">uncommon</span><span class="tag">⭐ Big &amp; free</span></div><a class="title" href="https://luma.com/r8sy88tq" target="_blank" rel="noopener">Running Production with Agents w/ Rootly AI, NVIDIA, Replit, &amp; WorkOS</a><p class="hook">NVIDIA/Replit/WorkOS panel on agents</p><p class="summary">Panel with leaders from Replit, NVIDIA and WorkOS on trusting AI agents in production; solid turnout (193).</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">6pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/7357frhj" target="_blank" rel="noopener">The American Dream &amp; Me: Dinner w/Friends of the Immigrant Founder Experience, by Polaris Collective &amp; AI Insiders.</a><p class="hook">Private dinner for immigrant founders</p><p class="summary">A relaxed, free dinner for the immigrant founder community, hosted by Polaris Collective and AI Insiders.</p><div class="meta"><span class="loc">Perry&#x27;s Embarcadero</span><span class="tag">Free</span><span class="tag">Luma</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">7pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/factoryai-sdkw" target="_blank" rel="noopener">Women in AI | Factory x Sapienne x Sequoia</a><p class="hook">Women in AI, food + drinks + workshop</p><p class="summary">Factory x Sapienne x Sequoia Women in AI night: food, drinks, a hands-on workshop and a fireside chat.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="day" data-date="2026-10-28"><h2>Wednesday, Oct 28</h2><span class="rel">in 2 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="cerebralvalley" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">9am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://www.meetup.com/san-francisco-odsc/events/316812136" target="_blank" rel="noopener">ODSC AI x NEBIUS | Hackathon</a><p class="hook">ODSC x Nebius hackathon</p><p class="summary">Full-day AI build hackathon, limited spots, free applications.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="cerebralvalley" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">9:30am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://events.builder.aws.com/GAORmR" target="_blank" rel="noopener">You.com Agentic Hackathon – SF Edition</a><p class="hook">You.com x AWS agentic hackathon</p><p class="summary">Full-day hackathon building agentic apps with You.com and AWS, ending in team pitches.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="cerebralvalley" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">3pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/5mydmvu6" target="_blank" rel="noopener">[RESCHEDULED] Open Source Higgsfield: ComfyUI Dev Platform Build Night</a><p class="hook">ComfyUI build night, $10k + RTX 5090s</p><p class="summary">Open-source generative-media build night on the Comfy Developer Platform; $10,000 grand prize and RTX 5090s.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span></div></div><div class="card rar-common" data-tier="hackathon" data-rarity="common" data-source="cerebralvalley" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">5pm</span><span class="rar">common</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/genspark-3dj8" target="_blank" rel="noopener">GenTeam Build Day: AI Agents for Real Estate</a><p class="hook">Real-estate AI agent build day</p><p class="summary">Build working AI agents for real-estate tasks; no experience required.</p><div class="meta"><span class="loc">Microsoft</span><span class="tag">Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="hackathon" data-rarity="common" data-source="cerebralvalley" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">5pm</span><span class="rar">common</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/a5v21lfr" target="_blank" rel="noopener">Nimble Game Jam</a><p class="summary">A game jam (no further details provided).</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">5:30pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/san-francisco-physical-ai-workshop-and-meetup-oct" target="_blank" rel="noopener">San Francisco Physical AI Workshop and Meetup</a><p class="hook">Physical-AI workshop with food &amp; drinks</p><p class="summary">Nebius x Voxel51 hands-on physical-AI workshop at Antler, opening with free networking, food and drinks.</p><div class="meta"><span class="loc">Antler</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley, Meetup</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="meetup" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">5:30pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://www.meetup.com/san-francisco-frontier-tech-meetup/events/316518714/" target="_blank" rel="noopener">Oct 28 - SF Physical AI Workshop and Meetup</a><p class="hook">Physical-AI workshop with food &amp; drinks (dup)</p><p class="summary">Same Nebius x Voxel51 physical-AI workshop as the Luma listing: free networking, food and drinks at Antler.</p><div class="meta"><span class="loc">Antler 144 Townsend St, San Francisco, CA 94107, USA</span><span class="tag">Meetup</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">5:30pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/shipsip" target="_blank" rel="noopener">Ship &amp; Sip at GitHub Universe</a><p class="hook">Cocktails + bites after GitHub Universe day 1</p><p class="summary">Sentry x LaunchDarkly take over The Interval at Fort Mason for cocktails, good bites and water views after day one of GitHub Universe.</p><div class="meta"><span class="loc">The Interval at Long Now</span><span class="tag">Free</span><span class="tag">Luma</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">6pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/git-sum" target="_blank" rel="noopener">Git Sum Dim Sum w/ Databricks &amp; Sentry</a><p class="hook">All-you-can-eat dim sum + GitHub Universe panel</p><p class="summary">Databricks x Sentry evening of all-you-can-eat dim sum, drinks and a panel with Kent C. Dodds and the Syntax hosts.</p><div class="meta"><span class="loc">Palette Tea House</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-uncommon" data-tier="bigfree" data-rarity="uncommon" data-source="luma" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">7pm</span><span class="rar">uncommon</span><span class="tag">⭐ Big &amp; free</span></div><a class="title" href="https://luma.com/5j93bc4c" target="_blank" rel="noopener">Scaling Intelligence —Modal x Gray Area Commissions — OPENING NIGHT</a><p class="hook">Free AI-art exhibition opening, 600 RSVPs</p><p class="summary">Gray Area x Modal open &quot;Scaling Intelligence,&quot; 11 commissioned AI art pieces, free admission; huge turnout, now waitlisted.</p><div class="meta"><span class="loc">Gray Area / Grand Theater</span><span class="tag">Free</span><span class="tag">⏳ Waitlist</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="day" data-date="2026-10-29"><h2>Thursday, Oct 29</h2><span class="rel">in 3 days</span></div><div class="card rar-rare" data-tier="hackathon" data-rarity="rare" data-source="luma" data-new="no" style="--rar:#2f9fe8"><div class="top"><span class="time">9am</span><span class="rar">rare</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/ta40197s" target="_blank" rel="noopener">Robot Hackathon: Harnessing Physical AI &amp; Data</a><p class="hook">2-day hackathon, real robot arms</p><p class="summary">Viam x MongoDB two-day hands-on hackathon building physical-AI apps with real robot arms provided.</p><div class="meta"><span class="loc">Robotics Center of Silicon Valley</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley, Meetup</span></div></div><div class="card rar-uncommon" data-tier="bigfree food" data-rarity="uncommon" data-source="luma" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">9am</span><span class="rar">uncommon</span><span class="tag">⭐ Big &amp; free</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/0m8oub77" target="_blank" rel="noopener">Entire Espresso with Gergely Orosz and Thomas Dohmke</a><p class="hook">Free coffee + GitHub ex-CEO fireside</p><p class="summary">Entire&#x27;s pop-up breakfast: free coffee and pastries while ex-GitHub CEO Thomas Dohmke talks with The Pragmatic Engineer&#x27;s Gergely Orosz; nearly full.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">⚡ Filling up</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">4pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/promptql-github-week-learnathon" target="_blank" rel="noopener">GitHub Universe Week: Multiplayer AI for Product Managers &amp; Engineering Leaders (Hands-on Learnathon)</a><p class="hook">Hands-on multiplayer-AI learnathon</p><p class="summary">GitHub Universe week hands-on learnathon on using multiplayer AI to move work from backlog to shipped spec.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">5:30pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/mux-24r9" target="_blank" rel="noopener">Agent Horror Stories 👻</a><p class="hook">Halloween dinner + agent horror stories</p><p class="summary">Entire&#x27;s Halloween event: spirited free food plus speakers from Google DeepMind, Polylane and others sharing agent &quot;horror stories&quot;.</p><div class="meta"><span class="loc">585 Market St</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="day" data-date="2026-10-30"><h2>Friday, Oct 30</h2><span class="rel">in 4 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="cerebralvalley" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">9:30am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://events.builder.aws.com/event/f3b4bffb-bc83-4848-a8f6-09c0f47d235b/register" target="_blank" rel="noopener">The Builder Base: Hackathon</a><p class="hook">The Builder Base hackathon</p><p class="summary">A focused day turning ideas into working prototypes, judged on shipping.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-epic" data-tier="hackathon" data-rarity="epic" data-source="luma" data-new="no" style="--rar:#a44dd6"><div class="top"><span class="time">4pm</span><span class="rar">epic</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/nighthack" target="_blank" rel="noopener">Night Hack by Founders, Inc.</a><p class="hook">5hr build night, show &amp; tell</p><p class="summary">Five-hour build night at Founders Inc: show up and ship a robot, agent, game, or side project, then demo it. Last run drew ~1,000 signups and 120+ projects.</p><div class="meta"><span class="loc">Fort Mason</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span></div></div><div class="card rar-common" data-tier="food" data-rarity="common" data-source="luma" data-new="yes" style="--rar:#8b949e"><div class="top"><span class="time">6pm</span><span class="rar">common</span><span class="tag">🍕 Free food</span></div><a class="title" href="https://luma.com/usecorgi-tg85" target="_blank" rel="noopener">🎃 No Excuses by .tech domains, Just Costumes: $10K Founder Party</a><p class="hook">Free drinks + $10K founder grant reveal</p><p class="summary">Halloween founder party with free drinks and food from .tech Domains x Corgi, live-announcing a $10K equity-free grant.</p><div class="meta"><span class="loc">425 Bush St</span><span class="tag">Free</span><span class="tag">Luma</span><span class="new">NEW</span></div></div><div class="day" data-date="2026-10-31"><h2>Saturday, Oct 31</h2><span class="rel">in 5 days</span></div><div class="card rar-common" data-tier="hackathon" data-rarity="common" data-source="luma" data-new="no" style="--rar:#8b949e"><div class="top"><span class="time">9am</span><span class="rar">common</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/venue-placeholder-nerdconf-stranger-buil" target="_blank" rel="noopener">Venue Placeholder - NerdConf Stranger Builds Hackathon - Members Only</a><p class="hook">Stranger Builds hackathon, members-only entry</p><p class="summary">Members-only Frontier Tower entry point for the Stranger Builds Halloween hackathon; same hack as the main listing but thin on its own details.</p><div class="meta"><span class="loc">Frontier Tower @ Spaceship 995 Market Street, San Fr</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="card rar-epic" data-tier="hackathon" data-rarity="epic" data-source="luma" data-new="no" style="--rar:#a44dd6"><div class="top"><span class="time">10am</span><span class="rar">epic</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/strangerbuilds" target="_blank" rel="noopener">STRANGER BUILDS I 10k in PRIZES I Halloween hackathon</a><p class="hook">$10K prizes, Halloween hack</p><p class="summary">STRANGER BUILDS: SF&#x27;s Halloween hackathon with $10,000 in cash prizes and credits; find your first users in 7 days.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="card rar-epic" data-tier="hackathon" data-rarity="epic" data-source="yc" data-new="no" style="--rar:#a44dd6"><div class="top"><span class="time">10am</span><span class="rar">epic</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://www.ycombinator.com/events/haunted-hacks-2026" target="_blank" rel="noopener">Haunted Hacks: Real-Time AI Edition</a><p class="hook">YC x OpenAI Halloween hack</p><p class="summary">Haunted Hacks: YC-hosted real-time AI hackathon backed by OpenAI, Mastra, Supabase and Freestyle; cash + credits for every participant.</p><div class="meta"><span class="loc">San Francisco, CA, USA</span><span class="tag">Free (application)</span><span class="tag">Y Combinator + Luma</span></div></div><section class="zone"><div class="sectgap"></div><div class="sect"><div class="row"><h2>Beyond this week</h2><span class="tally">32 events</span></div><span class="range">Nov 2 – Dec 25 · worth registering for now</span></div><div class="day" data-date="2026-11-03"><h2>Tuesday, Nov 3</h2><span class="rel">in 8 days</span></div><div class="card rar-rare" data-tier="hackathon bigfree" data-rarity="rare" data-source="eventbrite" data-new="yes" style="--rar:#2f9fe8"><div class="top"><span class="time">12am</span><span class="rar">rare</span><span class="tag">🛠️ Hackathon</span><span class="tag">⭐ Big &amp; free</span></div><a class="title" href="https://www.eventbrite.com/e/techequity-ai-summit-2026-talks-workshops-hackathon-ft-google-nvidia-tickets-1987560845994" target="_blank" rel="noopener">TechEquity Ai Summit 2026: Talks + Workshops + Hackathon, Ft Google, Nvidia</a><p class="hook">4-day AI summit + hackathon (dup)</p><p class="summary">Same TechEquity four-day AI summit and hackathon as the Luma listing, with Google/Nvidia speakers.</p><div class="meta"><span class="loc offsf">135 Constitution Dr 135 Constitution Drive</span><span class="tag">Eventbrite</span><span class="new">NEW</span></div></div><div class="card rar-rare" data-tier="hackathon bigfree" data-rarity="rare" data-source="luma" data-new="no" style="--rar:#2f9fe8"><div class="top"><span class="time">8:30am</span><span class="rar">rare</span><span class="tag">🛠️ Hackathon</span><span class="tag">⭐ Big &amp; free</span></div><a class="title" href="https://luma.com/ai-summit-2026" target="_blank" rel="noopener">TechEquity Ai Summit 2026: Talks + Workshops + Hackathon, Ft Google, Nvidia, DeepMind, Snowflake and more</a><p class="hook">4-day AI summit + hackathon, 2000+ attendees</p><p class="summary">TechEquity&#x27;s four-day AI summit combines a hackathon with talks from Google, Nvidia, DeepMind and Snowflake staff, free and 2,000+ strong.</p><div class="meta"><span class="loc offsf">135 Constitution Dr</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="cerebralvalley" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">5pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://www.meetup.com/building-ai-together-san-francisco/events/316758372" target="_blank" rel="noopener">Own Your AI: Build an Agentic AI Model Factory - Hack Night</a><p class="hook">Build a sovereign ML-ops agent</p><p class="summary">Hands-on session building a LangGraph ML-engineer agent on your own AWS infra via Union.ai.</p><div class="meta"><span class="loc">San Francisco San Francisco, CA, USA, San Francisco,</span><span class="tag">Cerebral Valley + Meetup</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="cerebralvalley" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">5pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://www.meetup.com/ai-builders-and-learners-sf/events/316758369" target="_blank" rel="noopener">Own Your AI: Build an Agentic AI Model Factory - in person Hack Night</a><p class="hook">Build a sovereign ML-ops agent (in-person)</p><p class="summary">In-person version of the Union.ai/AWS hack night building a sovereign ML-engineer agent.</p><div class="meta"><span class="loc">San Francisco San Francisco, CA, USA, San Francisco,</span><span class="tag">Cerebral Valley + Meetup</span></div></div><div class="day" data-date="2026-11-04"><h2>Wednesday, Nov 4</h2><span class="rel">in 9 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">1pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/nov-hackathon-2026" target="_blank" rel="noopener">Company Brain Hackathon: Build an AI Agent That Knows Your Organization</a><p class="hook">Build an org-knowledge AI agent</p><p class="summary">TechEquity afternoon hackathon building a &quot;Company Brain&quot; agent that knows your org&#x27;s documents and processes.</p><div class="meta"><span class="loc offsf">135 Constitution Dr</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="day" data-date="2026-11-06"><h2>Friday, Nov 6</h2><span class="rel">in 11 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">1pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/92iq2a12" target="_blank" rel="noopener">Hack the Feed: Creator Tools Hackathon with Oriane, GMI Cloud &amp; Lovable at Amplitude HQ!</a><p class="hook">Creator-tools hackathon, ship by sunset</p><p class="summary">Hack the Feed: build a creator tool using Oriane, GMI Cloud and Lovable&#x27;s stack, judged by entrepreneurs and investors.</p><div class="meta"><span class="loc">Amplitude Analytics</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">5pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/unu-q-3-nov-6-26" target="_blank" rel="noopener">Qualcomm UNO Q Hack Night #3</a><p class="hook">Qualcomm hack night, edge AI hardware</p><p class="summary">Qualcomm x HackerSquad hands-on hack night building local AI on the Arduino UNO Q edge board.</p><div class="meta"><span class="loc offsf">Qualcomm</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="day" data-date="2026-11-07"><h2>Saturday, Nov 7</h2><span class="rel">in 12 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="devpost" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">all day</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://a10-x-aws-hack-26.devpost.com/" target="_blank" rel="noopener">AWS x A10 Hack 2026</a><p class="hook">AWS x A10 hack, $7.5k prizes</p><p class="summary">Santa Clara ACM&#x27;s beginner-friendly cybersecurity/ML hackathon with AWS, $7,500 in prizes.</p><p class="deadline">⏳ Submissions close Nov 7 (12 days)</p><div class="meta"><span class="loc offsf">Heafey Hall</span><span class="tag">Free</span><span class="tag">Devpost</span></div></div><div class="card rar-rare" data-tier="hackathon" data-rarity="rare" data-source="cerebralvalley" data-new="yes" style="--rar:#2f9fe8"><div class="top"><span class="time">9am</span><span class="rar">rare</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://cerebralvalley.ai/e/aie-code-2026-hackathon" target="_blank" rel="noopener">AIE Code Summit 2026 Hackathon</a><p class="hook">$11k AI eng hackathon, Meta/DeepMind/MongoDB</p><p class="summary">One-day frontier AI engineering challenge with Meta, Google DeepMind, MongoDB and Fetch.ai as partners; $11,000 in prizes.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="cerebralvalley" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">10am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/seldon-4b3d?utm_source=cerebralvalley" target="_blank" rel="noopener">Ship Happens: A Seldon Hackathon</a><p class="hook">Seldon hackathon, $5k prizes</p><p class="summary">Rebuild a paid software product using Seldon&#x27;s Wren QA agent; up to $5,000 in prizes.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span><span class="new">NEW</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">12pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/ba9sivsv" target="_blank" rel="noopener">Grok Bot Build Day SF: Real-World Agents</a><p class="hook">Grok-powered agents build day</p><p class="summary">Grok Bot Build Day: bring a real-world idea and spend a Saturday wiring an AI agent to the physical world.</p><div class="meta"><span class="loc">1050 Sansome St</span><span class="tag">Free</span><span class="tag">Luma</span><span class="new">NEW</span></div></div><div class="card rar-common" data-tier="hackathon" data-rarity="common" data-source="cerebralvalley" data-new="no" style="--rar:#8b949e"><div class="top"><span class="time">4pm</span><span class="rar">common</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://cerebralvalley.ai/e/festiverse-sf-2026" target="_blank" rel="noopener">Festiverse 2026: The World’s Biggest Festival Hackathon</a><p class="hook">Festival-tech global hackathon</p><p class="summary">A global hackathon reimagining festivals with AI/AR/immersive tech; vague framing.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span></div></div><div class="card rar-rare" data-tier="hackathon" data-rarity="rare" data-source="cerebralvalley" data-new="no" style="--rar:#2f9fe8"><div class="top"><span class="time">11pm</span><span class="rar">rare</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://ushackathons.com/events/ai-research-hackathon" target="_blank" rel="noopener">AI Research Hackathon</a><p class="hook">48hr AI research-agent hackathon (dup)</p><p class="summary">Teams build self-improving AI research systems over 48 hours with GPU/API credits and lab mentorship.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span></div></div><div class="day" data-date="2026-11-08"><h2>Sunday, Nov 8</h2><span class="rel">in 13 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="eventbrite" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">12am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://www.eventbrite.com/e/aaron-swartz-international-hackathon-2026-tickets-2002921172143" target="_blank" rel="noopener">Aaron Swartz International Hackathon 2026</a><p class="hook">Aaron Swartz Day hackathon</p><p class="summary">Annual hackathon honoring Aaron Swartz, hosted by SecureDrop, Free Law Project, EFF and others.</p><div class="meta"><span class="loc">Internet Archive 300 Funston Avenue</span><span class="tag">Eventbrite</span><span class="new">NEW</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="agihouse" data-new="yes" style="--rar:#3fb950"><div class="top"><span class="time">10am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://app.agihouse.org/events/lenovo-x-agi-house-build-day" target="_blank" rel="noopener">Personal Agent to Real-World Deployment Build Day</a><p class="hook">AGI House x Lenovo build day</p><p class="summary">AGI House&#x27;s Build Day on deploying personal agents into real-world use (application required).</p><div class="meta"><span class="loc offsf">AGI House, 1868 Floribunda Ave, Hillsborough, CA</span><span class="tag">Free (application)</span><span class="tag">AGI House</span><span class="new">NEW</span></div></div><div class="day" data-date="2026-11-09"><h2>Monday, Nov 9</h2><span class="rel">in 14 days</span></div><div class="card rar-epic" data-tier="hackathon" data-rarity="epic" data-source="luma" data-new="yes" style="--rar:#a44dd6"><div class="top"><span class="time">5:30pm</span><span class="rar">epic</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/openro-lu9g" target="_blank" rel="noopener">Build Day: OpenRouter x Meta</a><p class="hook">OpenRouter x Meta build day</p><p class="summary">First-ever OpenRouter x Meta Superintelligence Labs Build Day: one evening, 60 minutes to turn an idea into something real.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span><span class="new">NEW</span></div></div><div class="day" data-date="2026-11-11"><h2>Wednesday, Nov 11</h2><span class="rel">in 16 days</span></div><div class="card rar-rare" data-tier="hackathon" data-rarity="rare" data-source="luma" data-new="no" style="--rar:#2f9fe8"><div class="top"><span class="time">9:30am</span><span class="rar">rare</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/r1d48cpq" target="_blank" rel="noopener">Stripe Startups Build Day San Francisco</a><p class="hook">Stripe Startups build + 1:1s</p><p class="summary">A day of hands-on building and coworking with the Stripe Startups team, plus 1:1 guidance for founders.</p><div class="meta"><span class="loc">South San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="day" data-date="2026-11-12"><h2>Thursday, Nov 12</h2><span class="rel">in 17 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="eventbrite" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">12am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://www.eventbrite.com/e/dmba-design-project-ai-hackathon-tickets-2002977348167" target="_blank" rel="noopener">DMBA  Design Project AI Hackathon</a><p class="hook">CCA design-with-code hackathon</p><p class="summary">Design students share their design-with-code process at CCA.</p><div class="meta"><span class="loc">California College of the Arts (CCA) 145 Hooper Stre</span><span class="tag">Eventbrite</span></div></div><div class="day" data-date="2026-11-13"><h2>Friday, Nov 13</h2><span class="rel">in 18 days</span></div><div class="card rar-common" data-tier="hackathon" data-rarity="common" data-source="devpost" data-new="no" style="--rar:#8b949e"><div class="top"><span class="time">all day</span><span class="rar">common</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://gtransformer-buildathon-2026.devpost.com/" target="_blank" rel="noopener">GTransformer AI Buildathon 2026 — AI for Global Good</a><p class="hook">AI-for-good buildathon, $1k prize</p><p class="summary">Small education/social-good AI buildathon, $1,000 prize pool.</p><p class="deadline">⏳ Submissions close Nov 13 (18 days)</p><div class="meta"><span class="loc offsf">Milpitas, Bay Area + Online</span><span class="tag">Free</span><span class="tag">Devpost</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">9am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/beta-3ue5" target="_blank" rel="noopener">Multi-Modal AI for Education Hackathon @ Snowflake | Beta Fund × Epic</a><p class="hook">Multi-modal AI-for-education hackathon</p><p class="summary">Beta Fund x Epic hackathon building multi-modal AI tools for education at Snowflake.</p><div class="meta"><span class="loc offsf">Menlo Park, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">10am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/frontierSF2" target="_blank" rel="noopener">SF Frontier Hackathon: Build your Autonomous Code Factory</a><p class="hook">10hr autonomous-coding hackathon, free tokens</p><p class="summary">Obvious&#x27;s research team leads a 10+ hour hackathon building an autonomous software factory, entirely free including unlimited tokens.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">10am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/band-ai-hacks-nov13-2026" target="_blank" rel="noopener">BAND Dark Factory Buildathon: San Francisco</a><p class="hook">Full-day AI software-factory buildathon</p><p class="summary">HackerSquad&#x27;s Dark Factory Buildathon: a full day building an AI software factory of coordinated coding agents.</p><div class="meta"><span class="loc">AWS Builder Loft, 2nd floor, 525 Market St, San Fran</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="cerebralvalley" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">5pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/0nsdnkoa" target="_blank" rel="noopener">On-Device AI Hackathon: Cleared for Takeoff ✈️</a><p class="hook">Offline on-device AI hackathon, Qualcomm</p><p class="summary">Build offline AI apps on Liquid Foundation Models and Qualcomm iQ9 hardware, Wi-Fi off; hardware prizes.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Cerebral Valley</span></div></div><div class="day" data-date="2026-11-14"><h2>Saturday, Nov 14</h2><span class="rel">in 19 days</span></div><div class="card rar-rare" data-tier="hackathon" data-rarity="rare" data-source="luma" data-new="no" style="--rar:#2f9fe8"><div class="top"><span class="time">9am</span><span class="rar">rare</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/sht6n8du" target="_blank" rel="noopener">AI Research Hackathon</a><p class="hook">48hr AI research-agent hackathon</p><p class="summary">Two-day hackathon building self-improving AI research agents and research swarms, with real tools, models and benchmarks.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">9am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/xdzhu4tn" target="_blank" rel="noopener">DNAForge &amp; MTC Berkeley: AI × Biology Hackathon</a><p class="hook">AI x biology hackathon, Berkeley</p><p class="summary">DNAForge &amp; MTC Berkeley&#x27;s AI x Biology Hackathon: biologists and AI engineers team up to solve a real biology problem over a full day.</p><div class="meta"><span class="loc offsf">Berkeley, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">12pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/biohackathon-haus-f26" target="_blank" rel="noopener">Biohackathon: Haus F26 - Members +3</a><p class="hook">No-fee wet-lab biohackathon</p><p class="summary">Biopunk Lab&#x27;s beginner-friendly wet-lab hackathon: walk into a real lab, run an experiment, win prizes. No entry fee.</p><div class="meta"><span class="loc">Frontier Tower @ Spaceship 995 Market Street, San Fr</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="day" data-date="2026-11-18"><h2>Wednesday, Nov 18</h2><span class="rel">in 23 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">5pm</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/clawmax-build-night-1" target="_blank" rel="noopener">ClawMax.ai Build Night San Francisco</a><p class="hook">Late-night agent-orchestration build</p><p class="summary">ClawMax.ai build night on orchestrating agent teams and workflows.</p><div class="meta"><span class="loc">Digital Jungle SF</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="day" data-date="2026-11-20"><h2>Friday, Nov 20</h2><span class="rel">in 25 days</span></div><div class="card rar-common" data-tier="hackathon" data-rarity="common" data-source="hackclub" data-new="no" style="--rar:#8b949e"><div class="top"><span class="time">3:15am</span><span class="rar">common</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://snowglobe.hackclub.com/" target="_blank" rel="noopener">Snowglobe</a><p class="hook">Student hackathon (Hack Club)</p><p class="summary">Student-run hackathon in SF via Hack Club; eligibility often high-school-aged, check the site.</p><div class="meta"><span class="loc">San Francisco, California</span><span class="tag">Free</span><span class="tag">Hack Club</span></div></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">9:30am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/personalagenthack" target="_blank" rel="noopener">Personal Agents Hackathon</a><p class="hook">Personal-agents hackathon</p><p class="summary">A hands-on hackathon pushing personal AI agents beyond chat apps into real-world tasks.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="day" data-date="2026-11-28"><h2>Saturday, Nov 28</h2><span class="rel">in 33 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">9:30am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/physicalhack" target="_blank" rel="noopener">Physical AI Hack</a><p class="hook">Physical AI hack day</p><p class="summary">A hands-on hack day pushing physical AI and robotics dexterity further.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span></div></div><div class="day" data-date="2026-12-11"><h2>Friday, Dec 11</h2><span class="rel">in 46 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">10am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/sf-2pgv" target="_blank" rel="noopener">HackerSquad Hack Day at AWS Builder Loft</a><p class="hook">Community hack day, AWS Builder Loft</p><p class="summary">HackerSquad community hack day: bring an idea, work on a project, connect with other builders.</p><div class="meta"><span class="loc">AWS Builder Loft, 525 Market St, San Francisco, CA 9</span><span class="tag">Free</span><span class="tag">Luma</span></div></div><div class="day" data-date="2026-12-12"><h2>Saturday, Dec 12</h2><span class="rel">in 47 days</span></div><div class="card rar-uncommon" data-tier="hackathon" data-rarity="uncommon" data-source="luma" data-new="no" style="--rar:#3fb950"><div class="top"><span class="time">11am</span><span class="rar">uncommon</span><span class="tag">🛠️ Hackathon</span></div><a class="title" href="https://luma.com/SalesCopilotAI" target="_blank" rel="noopener">AI Hackathon: Sales Copilot AI</a><p class="hook">AI sales-copilot hackathon, $30k prize</p><p class="summary">One-day hackathon building an AI sales copilot; $30k/$20k/$10k prizes, though the pitch reads a little spammy.</p><div class="meta"><span class="loc">San Francisco, CA</span><span class="tag">Free</span><span class="tag">Luma + Cerebral Valley</span></div></div></section>
+<div class="noresults" id="noresults" hidden>Nothing in that category this time.</div>
+<p class="sub" style="margin-top:1.5rem">+23 more below common not shown.</p>
+<footer>
+  Built by luma-scout for Benjamin Holderbein ·
+  generated Mon Oct 26, 7:44 AM PT<br>
+  Sources: AGI House 25, Cerebral Valley 222, Devpost 5, Eventbrite 83, Hack Club 3, Luma 454, Meetup 57, MLH 2, partiful 62, Y Combinator 2 ·
+  <a href="https://github.com/BenjaminHolderbein/luma-scout">source</a>
+</footer>
+</div>
+<script>
+(function(){
+  // click flash: the card lights up in its rarity colour on the way out --
+  // the link opens in a new tab, so the flash plays out fully behind it
+  document.addEventListener('click', function(e){
+    var c=e.target.closest && e.target.closest('.card');
+    if(!c) return;
+    c.classList.remove('flash');
+    void c.offsetWidth;  // restart the animation on repeat clicks
+    c.classList.add('flash');
+  });
+  // hand the ::before back to the legendary idle throb once the flash is done
+  document.addEventListener('animationend', function(e){
+    if(e.animationName!=='legthrob' && e.target.classList)
+      e.target.classList.remove('flash');
+  });
+
+  // the subscribe panel is a modal while open: any click outside it (the
+  // dimmed backdrop, the page, anything) closes it, as does Escape
+  document.addEventListener('click', function(e){
+    var d=document.querySelector('.subscribe[open]');
+    if(!d) return;
+    if(e.target.closest && e.target.closest('.subclose')){ d.removeAttribute('open'); return; }
+    if(e.target.closest && (e.target.closest('.subbody') ||
+                            e.target.closest('.subscribe summary'))) return;
+    d.removeAttribute('open');
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key!=='Escape') return;
+    var d=document.querySelector('.subscribe[open]');
+    if(d) d.removeAttribute('open');
+  });
+
+  // The page is generated on Monday but read all week: recompute each day's
+  // relative label against the viewer's clock, and dim days that have passed.
+  // Server-baked labels stay as the no-JS fallback.
+  (function(){
+    var now=new Date();
+    var today=new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    [].slice.call(document.querySelectorAll('.day[data-date]')).forEach(function(d){
+      var iso=d.getAttribute('data-date');
+      if(!iso) return;
+      var p=iso.split('-');
+      var day=new Date(+p[0], p[1]-1, +p[2]);
+      var delta=Math.round((day-today)/864e5);
+      var rel=d.querySelector('.rel');
+      if(rel) rel.textContent = delta===0?'Today' : delta===1?'Tomorrow'
+                              : delta>1?('in '+delta+' days')
+                              : delta===-1?'yesterday':'past';
+      if(delta<0){
+        d.classList.add('past');
+        var cur=d.nextElementSibling;
+        while(cur && !cur.matches('.day,.sect,.sectgap')){
+          if(cur.classList.contains('card')) cur.classList.add('past');
+          cur=cur.nextElementSibling;
+        }
+      }
+    });
+
+    // past days collapse by default behind a small toggle
+    var pastDays=[].slice.call(document.querySelectorAll('.day.past'));
+    if(pastDays.length){
+      var pastEls=[];
+      pastDays.forEach(function(d){
+        pastEls.push(d);
+        var c=d.nextElementSibling;
+        while(c && !c.matches('.day,.sect,.sectgap')){pastEls.push(c);c=c.nextElementSibling;}
+      });
+      var nCards=pastEls.filter(function(e){return e.classList.contains('card')}).length;
+      var hidden=true;
+      var btn=document.createElement('button');
+      btn.type='button'; btn.className='pastbtn';
+      function paint(){
+        pastEls.forEach(function(e){e.classList.toggle('pasthide', hidden)});
+        btn.textContent = hidden
+          ? 'Show past · '+nCards+' event'+(nCards===1?'':'s')
+          : 'Hide past';
+        // whichever day is first visible after the toggle loses its big top
+        // margin, so the button's gap and the day gap don't stack
+        [].slice.call(document.querySelectorAll('.aftertoggle'))
+          .forEach(function(e){e.classList.remove('aftertoggle')});
+        var nxt=btn.nextElementSibling;
+        while(nxt && nxt.classList.contains('pasthide')) nxt=nxt.nextElementSibling;
+        if(nxt && nxt.classList.contains('day')) nxt.classList.add('aftertoggle');
+      }
+      btn.addEventListener('click', function(){hidden=!hidden; paint();});
+      pastDays[0].parentNode.insertBefore(btn, pastDays[0]);
+      paint();
+    }
+  })();
+
+  var bar=document.getElementById('filters');
+  if(!bar) return;
+  bar.hidden=false;
+  var GROUPS=['tier','rarity','source','new'];
+  var btns=[].slice.call(bar.querySelectorAll('.fbtn'));
+  var cards=[].slice.call(document.querySelectorAll('.card'));
+  var none=document.getElementById('noresults');
+  var active={tier:'all',rarity:'all',source:'all','new':'all'};
+
+  // A card survives only if it satisfies every group at once. `ignore` lets the
+  // facet counts ask "how many would this chip give me?" without counting its
+  // own group against itself. Attributes are space-separated token lists so a
+  // card can carry several tags in one group (a big-free event that also has
+  // free food matches both category chips).
+  function matches(card, state, ignore){
+    for(var i=0;i<GROUPS.length;i++){
+      var g=GROUPS[i];
+      if(g===ignore) continue;
+      if(state[g]==='all') continue;
+      var attr=' '+(card.getAttribute('data-'+g)||'')+' ';
+      if(attr.indexOf(' '+state[g]+' ')===-1) return false;
+    }
+    return true;
+  }
+
+  function visibleAfter(el, stopSel){
+    var n=0, cur=el.nextElementSibling;
+    while(cur && !cur.matches(stopSel)){
+      if(cur.classList.contains('card') && !cur.hidden) n++;
+      cur=cur.nextElementSibling;
+    }
+    return n;
+  }
+
+  function apply(){
+    cards.forEach(function(c){ c.hidden = !matches(c, active); });
+
+    [].slice.call(document.querySelectorAll('.day')).forEach(function(d){
+      d.hidden = visibleAfter(d, '.day,.sect,.sectgap') === 0;
+    });
+    [].slice.call(document.querySelectorAll('.sect')).forEach(function(s){
+      var n=visibleAfter(s, '.sect');
+      var t=s.querySelector('.tally');
+      if(t) t.textContent = n + ' event' + (n===1?'':'s');
+      s.hidden = n===0;
+    });
+    var zone=document.querySelector('.zone');
+    if(zone) zone.hidden = zone.querySelectorAll('.card:not([hidden])').length===0;
+    if(none) none.hidden = document.querySelectorAll('.card:not([hidden])').length>0;
+
+    // Live facet counts: each chip shows what it would actually yield given the
+    // other groups, and dead ends disable themselves instead of lying.
+    btns.forEach(function(b){
+      var g=b.getAttribute('data-group'), v=b.getAttribute('data-val');
+      var probe={}; GROUPS.forEach(function(k){ probe[k]=active[k]; }); probe[g]=v;
+      var n=0;
+      cards.forEach(function(c){ if(matches(c, probe)) n++; });
+      var el=b.querySelector('.n');
+      if(el) el.textContent=n;
+      b.disabled = (n===0 && v!=='all');
+      b.setAttribute('aria-pressed', String(active[g]===v));
+    });
+  }
+
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var g=b.getAttribute('data-group'), v=b.getAttribute('data-val');
+      active[g] = (v===active[g] && v!=='all') ? 'all' : v;
+      apply();
+    });
+  });
+  apply();
+})();
+</script>
